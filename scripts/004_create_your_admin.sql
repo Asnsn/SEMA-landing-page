@@ -36,5 +36,5 @@ INSERT INTO auth.users (
 INSERT INTO public.admin_users (id, email, full_name, role)
 SELECT id, email, 'Administrador SEMA', 'super_admin'
 FROM auth.users 
-WHERE email = 'seu-email@exemplo.com' -- MUDE AQUI TAMBÉM
+WHERE email = 'arthuroasn@gmail.com' -- MUDE AQUI TAMBÉM
 ON CONFLICT (id) DO NOTHING;
