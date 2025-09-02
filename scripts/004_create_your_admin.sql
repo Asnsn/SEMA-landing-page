@@ -21,7 +21,7 @@ INSERT INTO auth.users (
   gen_random_uuid(),
   'authenticated',
   'authenticated',
-  'arthuroasn@gmail,com', -- MUDE AQUI
+  'arthuroasn@gmail.com', -- MUDE AQUI
   crypt('tutu153750TUTU@', gen_salt('bf')), -- MUDE AQUI
   now(),
   now(),
