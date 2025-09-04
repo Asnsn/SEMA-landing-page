@@ -1,4 +1,4 @@
-#Projeto Sema - Website Institucional
+Projeto Sema - Website Institucional
 Bem-vindo ao repositório oficial do website da Instituição Sema, desenvolvido com a moderna tecnologia Next.js para oferecer uma experiência de usuário rápida, acessível e otimizada.
 
 📜 Sobre a Instituição Sema
