@@ -1,11 +1,6 @@
 Projeto Sema - Website Institucional
 Bem-vindo ao repositório oficial do website da Instituição Sema, desenvolvido com a moderna tecnologia Next.js para oferecer uma experiência de usuário rápida, acessível e otimizada.
 
-📜 Sobre a Instituição Sema
-A Sema é uma instituição dedicada a [adicione aqui a missão principal da Sema. Ex: promover a educação ambiental, apoiar comunidades locais, etc.]. Nosso objetivo é [descreva o objetivo em uma frase. Ex: criar um futuro mais sustentável e justo para todos].
-
-Este website serve como nossa principal plataforma digital para [liste os principais objetivos do site. Ex: divulgar nossos projetos, angariar doações, conectar voluntários e compartilhar nossos resultados com a comunidade].
-
 ✨ Funcionalidades Principais
 O site foi construído com as seguintes funcionalidades em mente:
 
