@@ -59,13 +59,15 @@ export function Header() {
           <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
             Notícias
           </Link>
-          <Link href="/#contato" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link href="/contato" className="text-sm font-medium hover:text-primary transition-colors">
             Contato
           </Link>
         </nav>
 
         <div className="flex items-center space-x-4">
-          <Button className="hidden sm:inline-flex bg-secondary hover:bg-secondary/90">Apoie Nossa Causa</Button>
+          <Link href="/apoie-nossa-causa">
+            <Button className="hidden sm:inline-flex bg-secondary hover:bg-secondary/90">Apoie Nossa Causa</Button>
+          </Link>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
@@ -122,7 +124,7 @@ export function Header() {
                     Notícias
                   </Link>
                   <Link
-                    href="/#contato"
+                    href="/contato"
                     className="text-lg font-medium hover:text-primary transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
@@ -130,9 +132,11 @@ export function Header() {
                   </Link>
                 </nav>
 
-                <Button className="bg-secondary hover:bg-secondary/90 w-full" onClick={() => setIsOpen(false)}>
-                  Apoie Nossa Causa
-                </Button>
+                <Link href="/apoie-nossa-causa">
+                  <Button className="bg-secondary hover:bg-secondary/90 w-full" onClick={() => setIsOpen(false)}>
+                    Apoie Nossa Causa
+                  </Button>
+                </Link>
               </div>
             </SheetContent>
           </Sheet>
