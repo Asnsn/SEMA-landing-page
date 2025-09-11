@@ -12,3 +12,5 @@ export function createClient() {
 
   return createBrowserClient(url, key)
 }
+
+export { createBrowserClient }
