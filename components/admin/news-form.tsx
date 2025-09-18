@@ -124,6 +124,20 @@ export function NewsForm({ initialData }: NewsFormProps) {
     try {
       console.log('Iniciando publicação da notícia...')
       
+      // Testar conexão com o banco
+      console.log('Testando conexão com o banco...')
+      const { data: testData, error: testError } = await supabase
+        .from('news_posts')
+        .select('id')
+        .limit(1)
+      
+      if (testError) {
+        console.error('Erro de conexão com o banco:', testError)
+        throw new Error(`Erro de conexão: ${testError.message}`)
+      }
+      
+      console.log('Conexão com banco OK')
+      
       // Verificar se o usuário está autenticado
       const {
         data: { user },
@@ -151,8 +165,9 @@ export function NewsForm({ initialData }: NewsFormProps) {
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
-        featured_media_type: formData.featured_media_type,
+        // Temporariamente removido para testar conexão
+        // media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        // featured_media_type: formData.featured_media_type,
       }
       
       console.log('Dados para salvar:', dataToSave)
