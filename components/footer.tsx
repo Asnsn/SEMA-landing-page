@@ -10,7 +10,7 @@ export function Footer() {
               <img 
                 src="/sema-logo.jpg" 
                 alt="SEMA Logo" 
-                className="h-8 w-8"
+                className="h-8 w-8 rounded-full object-cover"
               />
               <span className="text-xl font-bold text-primary">SEMA</span>
             </Link>
