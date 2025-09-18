@@ -122,18 +122,25 @@ export function NewsForm({ initialData }: NewsFormProps) {
     const supabase = createClient()
 
     try {
+      console.log('Iniciando publicação da notícia...')
+      
       // Verificar se o usuário está autenticado
       const {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) throw new Error("Usuário não autenticado")
+      
+      console.log('Usuário autenticado:', user.email)
 
       const finalStatus = status || formData.status
+      console.log('Status final:', finalStatus)
       
       // Fazer upload dos arquivos de mídia (se houver)
       let uploadedMedia = []
       if (mediaFiles.length > 0) {
+        console.log('Fazendo upload de', mediaFiles.length, 'arquivos...')
         uploadedMedia = await uploadMediaFiles(mediaFiles)
+        console.log('Upload concluído:', uploadedMedia.length, 'arquivos')
       }
       
       const dataToSave = {
@@ -147,6 +154,8 @@ export function NewsForm({ initialData }: NewsFormProps) {
         media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
         featured_media_type: formData.featured_media_type,
       }
+      
+      console.log('Dados para salvar:', dataToSave)
 
       if (initialData) {
         // Atualizar notícia existente
@@ -167,11 +176,21 @@ export function NewsForm({ initialData }: NewsFormProps) {
       router.refresh()
     } catch (error: unknown) {
       console.error('Erro detalhado:', error)
+      
+      let errorMessage = "Ocorreu um erro inesperado"
+      
       if (error instanceof Error) {
-        setError(`Erro: ${error.message}`)
-      } else {
-        setError("Ocorreu um erro inesperado")
+        errorMessage = `Erro: ${error.message}`
+      } else if (typeof error === 'object' && error !== null) {
+        const errorObj = error as any
+        if (errorObj.message) {
+          errorMessage = `Erro: ${errorObj.message}`
+        } else if (errorObj.error) {
+          errorMessage = `Erro: ${errorObj.error}`
+        }
       }
+      
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
