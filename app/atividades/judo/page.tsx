@@ -203,7 +203,7 @@ export default function JudoPage() {
                     <span className="text-sm">Faixa Amarela - 1º Kyu</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-4 h-4 bg-orange-400 rounded"></div>
+                    <div className="w-4 h-4 bg-primary rounded"></div>
                     <span className="text-sm">Faixa Laranja - 2º Kyu</span>
                   </div>
                   <div className="flex items-center space-x-3">

@@ -49,7 +49,7 @@ export default async function NoticiasPage() {
           <h1 className="text-3xl font-bold text-gray-900">Notícias</h1>
           <p className="text-gray-600">Gerencie todas as notícias da SEMA</p>
         </div>
-        <Button asChild className="bg-orange-600 hover:bg-orange-700">
+        <Button asChild className="bg-primary hover:bg-primary/90">
           <Link href="/admin/noticias/nova">
             <Plus className="h-4 w-4 mr-2" />
             Nova Notícia
@@ -121,7 +121,7 @@ export default async function NoticiasPage() {
                 <h3 className="text-lg font-medium text-gray-900">Nenhuma notícia encontrada</h3>
                 <p className="text-gray-500">Comece criando sua primeira notícia para a SEMA.</p>
               </div>
-              <Button asChild className="bg-orange-600 hover:bg-orange-700">
+              <Button asChild className="bg-primary hover:bg-primary/90">
                 <Link href="/admin/noticias/nova">
                   <Plus className="h-4 w-4 mr-2" />
                   Criar Primeira Notícia

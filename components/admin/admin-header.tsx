@@ -53,7 +53,7 @@ export function AdminHeader({ user }: AdminHeaderProps) {
                 <span className="text-sm font-semibold text-gray-900">{user.full_name || user.email}</span>
                 <span className="text-xs text-gray-500 capitalize">{user.role}</span>
               </div>
-              <div className="h-8 w-8 rounded-full bg-orange-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                 <span className="text-sm font-medium text-white">
                   {(user.full_name || user.email).charAt(0).toUpperCase()}
                 </span>

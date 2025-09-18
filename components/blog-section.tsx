@@ -57,7 +57,7 @@ export async function BlogSection() {
                   </div>
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">SEMA</span>
+                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">SEMA</span>
                       <span className="text-xs text-muted-foreground">
                         {formatDate(post.published_at || post.created_at)}
                       </span>

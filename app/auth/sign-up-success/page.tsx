@@ -4,10 +4,10 @@ import Link from "next/link"
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-orange-600 mb-2">SEMA Admin</h1>
+          <h1 className="text-3xl font-bold text-primary mb-2">SEMA Admin</h1>
         </div>
 
         <Card className="shadow-lg border-0">
@@ -30,7 +30,7 @@ export default function Page() {
             </div>
 
             <div className="space-y-2">
-              <Button asChild className="w-full bg-orange-600 hover:bg-orange-700">
+              <Button asChild className="w-full bg-primary hover:bg-primary/90">
                 <Link href="/auth/login">Ir para Login</Link>
               </Button>
 

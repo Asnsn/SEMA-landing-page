@@ -77,7 +77,7 @@ export function AdminMobileSidebar({ open, setOpen }: AdminMobileSidebarProps) {
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
                   <Link href="/admin" className="flex items-center" onClick={() => setOpen(false)}>
-                    <span className="text-2xl font-bold text-orange-600">SEMA</span>
+                    <span className="text-2xl font-bold text-primary">SEMA</span>
                     <span className="ml-2 text-sm text-gray-500">Admin</span>
                   </Link>
                 </div>
@@ -92,16 +92,16 @@ export function AdminMobileSidebar({ open, setOpen }: AdminMobileSidebarProps) {
                               onClick={() => setOpen(false)}
                               className={cn(
                                 pathname === item.href
-                                  ? "bg-orange-50 text-orange-600"
-                                  : "text-gray-700 hover:text-orange-600 hover:bg-orange-50",
+                                  ? "bg-red-50 text-primary"
+                                  : "text-gray-700 hover:text-primary hover:bg-red-50",
                                 "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                               )}
                             >
                               <item.icon
                                 className={cn(
                                   pathname === item.href
-                                    ? "text-orange-600"
-                                    : "text-gray-400 group-hover:text-orange-600",
+                                    ? "text-primary"
+                                    : "text-gray-400 group-hover:text-primary",
                                   "h-6 w-6 shrink-0",
                                 )}
                                 aria-hidden="true"

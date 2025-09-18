@@ -92,7 +92,7 @@ export default async function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <Button asChild className="bg-orange-600 hover:bg-orange-700">
+            <Button asChild className="bg-primary hover:bg-primary/90">
               <Link href="/admin/noticias/nova">Nova Notícia</Link>
             </Button>
             <Button asChild variant="outline">
@@ -149,7 +149,7 @@ export default async function AdminDashboard() {
               <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhuma notícia</h3>
               <p className="mt-1 text-sm text-gray-500">Comece criando sua primeira notícia.</p>
               <div className="mt-6">
-                <Button asChild className="bg-orange-600 hover:bg-orange-700">
+                <Button asChild className="bg-primary hover:bg-primary/90">
                   <Link href="/admin/noticias/nova">Nova Notícia</Link>
                 </Button>
               </div>

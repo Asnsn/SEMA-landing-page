@@ -60,10 +60,10 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-orange-600 mb-2">SEMA Admin</h1>
+          <h1 className="text-3xl font-bold text-primary mb-2">SEMA Admin</h1>
           <p className="text-gray-600">Cadastro de novo administrador</p>
         </div>
 
@@ -84,7 +84,7 @@ export default function Page() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    className="border-gray-300 focus:border-primary focus:ring-primary"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -96,7 +96,7 @@ export default function Page() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    className="border-gray-300 focus:border-primary focus:ring-primary"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -107,7 +107,7 @@ export default function Page() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    className="border-gray-300 focus:border-primary focus:ring-primary"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -118,7 +118,7 @@ export default function Page() {
                     required
                     value={repeatPassword}
                     onChange={(e) => setRepeatPassword(e.target.value)}
-                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                    className="border-gray-300 focus:border-primary focus:ring-primary"
                   />
                 </div>
                 {error && (
@@ -128,7 +128,7 @@ export default function Page() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-primary hover:bg-primary/90 text-white"
                   disabled={isLoading}
                 >
                   {isLoading ? "Criando conta..." : "Criar Conta"}
@@ -138,7 +138,7 @@ export default function Page() {
 
             <div className="mt-6 text-center text-sm space-y-2">
               <div>
-                <Link href="/auth/login" className="text-orange-600 hover:text-orange-700 underline">
+                <Link href="/auth/login" className="text-primary hover:text-primary/80 underline">
                   Já tem uma conta? Faça login
                 </Link>
               </div>
