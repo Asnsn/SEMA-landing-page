@@ -137,10 +137,16 @@ export function NewsForm({ initialData }: NewsFormProps) {
       }
       
       const dataToSave = {
-        ...formData,
+        title: formData.title,
+        content: formData.content,
+        excerpt: formData.excerpt,
+        featured_image: formData.featured_image,
+        slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: uploadedMedia.length > 0 ? uploadedMedia : null,
+        // Temporariamente removido até o banco ser atualizado
+        // media_files: uploadedMedia.length > 0 ? uploadedMedia : null,
+        // featured_media_type: formData.featured_media_type,
       }
 
       if (initialData) {
