@@ -144,9 +144,8 @@ export function NewsForm({ initialData }: NewsFormProps) {
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        // Temporariamente removido até executar SQL no Neon
-        // media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
-        // featured_media_type: formData.featured_media_type,
+        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        featured_media_type: formData.featured_media_type,
       }
 
       if (initialData) {
@@ -297,18 +296,12 @@ export function NewsForm({ initialData }: NewsFormProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-              <p className="text-sm text-yellow-800">
-                <strong>Upload de mídia temporariamente desabilitado.</strong><br/>
-                Execute o script SQL no Neon para ativar esta funcionalidade.
-              </p>
-            </div>
-            {/* <MediaUpload
+            <MediaUpload
               onFilesChange={handleMediaFilesChange}
               maxFiles={10}
               acceptedTypes={['image/*', 'video/*']}
               maxSize={50}
-            /> */}
+            />
           </CardContent>
         </Card>
 
