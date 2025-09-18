@@ -1,5 +1,3 @@
-const { createClient } = require('@supabase/supabase-js')
-
 exports.handler = async (event, context) => {
   // Configurar CORS
   const headers = {
@@ -25,16 +23,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { file, filename, mimeType } = JSON.parse(event.body)
+    const { filename, mimeType } = JSON.parse(event.body)
 
-    // Aqui você pode implementar upload para:
-    // 1. Cloudinary
-    // 2. AWS S3
-    // 3. Netlify Large Media
-    // 4. Outro serviço de storage
-
-    // Por enquanto, vamos simular um upload bem-sucedido
-    const mockUrl = `https://via.placeholder.com/800x600/cccccc/666666?text=${encodeURIComponent(filename)}`
+    // Simular upload bem-sucedido
+    // Em produção, você implementaria upload real para Cloudinary, AWS S3, etc.
+    const mockUrl = `https://via.placeholder.com/800x600/cccccc/666666?text=${encodeURIComponent(filename || 'imagem')}`
     
     return {
       statusCode: 200,
@@ -42,8 +35,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         url: mockUrl,
-        filename,
-        mimeType,
+        filename: filename || 'imagem.jpg',
+        mimeType: mimeType || 'image/jpeg',
       }),
     }
   } catch (error) {
