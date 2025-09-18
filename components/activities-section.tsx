@@ -4,47 +4,52 @@ import Link from "next/link"
 
 const activities = [
   {
-    id: "ballet",
-    title: "Ballet",
-    description: "Desenvolvendo graça, disciplina e expressão artística através da dança clássica.",
-    image: "/children-ballet-class-dancing.png",
-    age: "4-16 anos",
+    id: "kung-fu",
+    title: "Kung Fu",
+    description: "Traz benefícios para a saúde física e mental dos alunos, por meio de exercícios posturais e de respiração dos praticantes. Estimula a disciplina, o foco, a paz interior e o respeito ao próximo.",
+    image: "/children-judo-martial-arts-class.png",
+    age: "Todas as idades",
+    students: "21 alunos",
+  },
+  {
+    id: "handebol",
+    title: "Handebol",
+    description: "Esporte coletivo que promove o trabalho em equipe, a competitividade saudável e o respeito pelas regras. Ensinamos técnicas básicas, como passes e posicionamento, e também valores como o trabalho em equipe e o respeito ao adversário.",
+    image: "/children-volleyball-team-sport.png",
+    age: "Todas as idades",
+    students: "46 alunos",
   },
   {
     id: "futebol",
-    title: "Futebol",
-    description:
-      "Promovendo trabalho em equipe, disciplina e habilidades motoras através do esporte mais popular do Brasil.",
+    title: "Futebol e Futsal",
+    description: "Modalidades muito populares entre crianças e adolescentes, proporcionando uma forma segura e saudável de lazer. Essas atividades incentivam a prática esportiva regular e ensinam a importância do jogo limpo e do trabalho em equipe.",
     image: "/children-playing-soccer-football.png",
-    age: "6-18 anos",
+    age: "Todas as idades",
+    students: "359 alunos",
   },
   {
-    id: "judo",
-    title: "Judô",
-    description: "Ensinando respeito, autocontrole e defesa pessoal através desta arte marcial milenar.",
-    image: "/children-judo-martial-arts-class.png",
-    age: "5-17 anos",
+    id: "ballet",
+    title: "Ballet",
+    description: "Com foco no público infantil e juvenil, o ballet é uma das atividades mais populares entre as crianças, proporcionando uma forma de expressão corporal e emocional. Trabalha a elegância, coordenação motora e postura dos alunos.",
+    image: "/children-ballet-class-dancing.png",
+    age: "Infantil e juvenil",
+    students: "75 alunas",
   },
   {
     id: "capoeira",
     title: "Capoeira",
-    description: "Celebrando a cultura brasileira através desta arte que combina luta, dança e música.",
+    description: "Contribui para o desenvolvimento físico, equilíbrio, mobilidade e a flexibilidade dos alunos e incentiva o trabalho em grupo e o respeito pela cultura afro-brasileira, por meio de atividades que misturam artes marciais, música e dança.",
     image: "/children-capoeira-brazilian-martial-arts.png",
-    age: "6-16 anos",
+    age: "Todas as idades",
+    students: "23 alunos",
   },
   {
-    id: "volei",
-    title: "Vôlei",
-    description: "Desenvolvendo coordenação, estratégia e espírito de equipe através do voleibol.",
-    image: "/children-volleyball-team-sport.png",
-    age: "8-18 anos",
-  },
-  {
-    id: "natacao",
-    title: "Natação",
-    description: "Promovendo saúde e segurança aquática através do ensino da natação.",
-    image: "/children-swimming-pool-lessons.png",
-    age: "4-18 anos",
+    id: "reforco-escolar",
+    title: "Reforço Escolar",
+    description: "Atendimento focado no auxílio aos alunos que têm dificuldades em matérias como português e matemática. Tem se mostrado fundamental para o desempenho escolar dos alunos, contribuindo para a permanência e o sucesso na escola.",
+    image: "/children-computer-class-digital-inclusion.png",
+    age: "Todas as idades",
+    students: "18 alunos",
   },
 ]
 
@@ -76,6 +81,9 @@ export function ActivitiesSection() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl">{activity.title}</CardTitle>
                   <span className="text-sm bg-primary/10 text-primary px-2 py-1 rounded-full">{activity.age}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-primary">{activity.students}</span>
                 </div>
               </CardHeader>
               <CardContent>
