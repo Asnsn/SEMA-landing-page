@@ -24,7 +24,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
           <img 
-            src="/sema-logo.svg" 
+            src="/sema-logo.jpg" 
             alt="SEMA Logo" 
             className="h-8 w-8"
           />
