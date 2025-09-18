@@ -144,9 +144,8 @@ export function NewsForm({ initialData }: NewsFormProps) {
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        // Temporariamente removido até o banco ser atualizado
-        // media_files: uploadedMedia.length > 0 ? uploadedMedia : null,
-        // featured_media_type: formData.featured_media_type,
+        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        featured_media_type: formData.featured_media_type,
       }
 
       if (initialData) {
