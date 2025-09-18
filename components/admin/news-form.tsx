@@ -151,8 +151,9 @@ export function NewsForm({ initialData }: NewsFormProps) {
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
-        featured_media_type: formData.featured_media_type,
+        // Temporariamente removido até as colunas serem criadas no banco
+        // media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        // featured_media_type: formData.featured_media_type,
       }
       
       console.log('Dados para salvar:', dataToSave)
@@ -315,12 +316,21 @@ export function NewsForm({ initialData }: NewsFormProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <MediaUpload
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Upload de mídia temporariamente desabilitado.</strong><br/>
+                Execute o script SQL no Neon para ativar esta funcionalidade.
+              </p>
+              <p className="text-xs text-blue-600 mt-2">
+                Script: ALTER TABLE public.news_posts ADD COLUMN IF NOT EXISTS featured_media_type text DEFAULT 'image';
+              </p>
+            </div>
+            {/* <MediaUpload
               onFilesChange={handleMediaFilesChange}
               maxFiles={10}
               acceptedTypes={['image/*', 'video/*']}
               maxSize={50}
-            />
+            /> */}
           </CardContent>
         </Card>
 
