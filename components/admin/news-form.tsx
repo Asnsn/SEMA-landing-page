@@ -11,8 +11,18 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
-import { Save, Eye, ArrowLeft } from "lucide-react"
+import { Save, Eye, ArrowLeft, Image as ImageIcon, Video } from "lucide-react"
 import Link from "next/link"
+import { MediaUpload } from "./media-upload"
+
+interface MediaFile {
+  id: string
+  file: File
+  preview: string
+  type: 'image' | 'video'
+  name: string
+  size: number
+}
 
 interface NewsFormProps {
   initialData?: {
@@ -21,6 +31,8 @@ interface NewsFormProps {
     content: string
     excerpt: string | null
     featured_image: string | null
+    media_files?: any[]
+    featured_media_type?: string
     slug: string
     status: string
   }
@@ -30,11 +42,13 @@ export function NewsForm({ initialData }: NewsFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([])
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
     content: initialData?.content || "",
     excerpt: initialData?.excerpt || "",
     featured_image: initialData?.featured_image || "",
+    featured_media_type: initialData?.featured_media_type || "image",
     slug: initialData?.slug || "",
     status: initialData?.status || "draft",
   })
@@ -59,6 +73,34 @@ export function NewsForm({ initialData }: NewsFormProps) {
     }))
   }
 
+  const handleMediaFilesChange = (files: MediaFile[]) => {
+    setMediaFiles(files)
+  }
+
+  const uploadMediaFiles = async (files: MediaFile[]) => {
+    const uploadedFiles = []
+    
+    for (const file of files) {
+      try {
+        // Simular upload - em produção, você faria upload real para um serviço
+        const mockUrl = URL.createObjectURL(file.file)
+        uploadedFiles.push({
+          filename: file.name,
+          original_name: file.name,
+          file_type: file.type,
+          file_size: file.size,
+          mime_type: file.file.type,
+          url: mockUrl,
+          thumbnail_url: file.type === 'image' ? mockUrl : null,
+        })
+      } catch (error) {
+        console.error('Erro ao fazer upload:', error)
+      }
+    }
+    
+    return uploadedFiles
+  }
+
   const handleSubmit = async (e: React.FormEvent, status?: string) => {
     e.preventDefault()
     setIsLoading(true)
@@ -74,10 +116,15 @@ export function NewsForm({ initialData }: NewsFormProps) {
       if (!user) throw new Error("Usuário não autenticado")
 
       const finalStatus = status || formData.status
+      
+      // Fazer upload dos arquivos de mídia
+      const uploadedMedia = await uploadMediaFiles(mediaFiles)
+      
       const dataToSave = {
         ...formData,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
+        media_files: uploadedMedia,
       }
 
       if (initialData) {
@@ -188,6 +235,9 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 placeholder="https://exemplo.com/imagem.jpg"
                 type="url"
               />
+              <p className="text-xs text-gray-500">
+                Ou use o upload de mídia abaixo para adicionar múltiplas imagens e vídeos
+              </p>
             </div>
 
             <div className="grid gap-2">
@@ -206,6 +256,26 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 </SelectContent>
               </Select>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <ImageIcon className="h-5 w-5 mr-2" />
+              Mídia da Notícia
+            </CardTitle>
+            <CardDescription>
+              Adicione imagens e vídeos para enriquecer o conteúdo da notícia
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MediaUpload
+              onFilesChange={handleMediaFilesChange}
+              maxFiles={10}
+              acceptedTypes={['image/*', 'video/*']}
+              maxSize={50}
+            />
           </CardContent>
         </Card>
 
