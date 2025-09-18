@@ -106,6 +106,19 @@ export function NewsForm({ initialData }: NewsFormProps) {
     setIsLoading(true)
     setError(null)
 
+    // Validação básica
+    if (!formData.title.trim()) {
+      setError("O título é obrigatório")
+      setIsLoading(false)
+      return
+    }
+
+    if (!formData.content.trim()) {
+      setError("O conteúdo é obrigatório")
+      setIsLoading(false)
+      return
+    }
+
     const supabase = createClient()
 
     try {
@@ -117,14 +130,17 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
       const finalStatus = status || formData.status
       
-      // Fazer upload dos arquivos de mídia
-      const uploadedMedia = await uploadMediaFiles(mediaFiles)
+      // Fazer upload dos arquivos de mídia (se houver)
+      let uploadedMedia = []
+      if (mediaFiles.length > 0) {
+        uploadedMedia = await uploadMediaFiles(mediaFiles)
+      }
       
       const dataToSave = {
         ...formData,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: uploadedMedia,
+        media_files: uploadedMedia.length > 0 ? uploadedMedia : null,
       }
 
       if (initialData) {
@@ -145,7 +161,12 @@ export function NewsForm({ initialData }: NewsFormProps) {
       router.push("/admin/noticias")
       router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ocorreu um erro")
+      console.error('Erro detalhado:', error)
+      if (error instanceof Error) {
+        setError(`Erro: ${error.message}`)
+      } else {
+        setError("Ocorreu um erro inesperado")
+      }
     } finally {
       setIsLoading(false)
     }
