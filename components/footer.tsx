@@ -7,9 +7,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
-                S
-              </div>
+              <img 
+                src="/sema-logo.svg" 
+                alt="SEMA Logo" 
+                className="h-8 w-8"
+              />
               <span className="text-xl font-bold text-primary">SEMA</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
