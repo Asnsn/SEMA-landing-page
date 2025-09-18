@@ -7,53 +7,124 @@ import Link from "next/link"
 
 const activities = [
   {
-    id: "ballet",
-    title: "Ballet",
-    description: "Desenvolvendo graça, disciplina e expressão artística através da dança clássica.",
-    image: "/children-ballet-class-dancing.png",
-    age: "4-16 anos",
-    color: "bg-pink-100 text-pink-800",
+    id: "kung-fu",
+    title: "Kung Fu",
+    description: "Traz benefícios para a saúde física e mental dos alunos, por meio de exercícios posturais e de respiração dos praticantes. Estimula a disciplina, o foco, a paz interior e o respeito ao próximo.",
+    image: "/children-judo-martial-arts-class.png",
+    age: "Todas as idades",
+    color: "bg-red-100 text-red-800",
+    students: "21 alunos",
+    schedule: "Terça e quinta das 19:30 às 21:00h | Sábado e domingo das 10:00 às 11:30h"
+  },
+  {
+    id: "handebol",
+    title: "Handebol",
+    description: "Esporte coletivo que promove o trabalho em equipe, a competitividade saudável e o respeito pelas regras. Ensinamos técnicas básicas, como passes e posicionamento, e também valores como o trabalho em equipe e o respeito ao adversário.",
+    image: "/children-volleyball-team-sport.png",
+    age: "Todas as idades",
+    color: "bg-blue-100 text-blue-800",
+    students: "46 alunos",
+    schedule: "Terça e quinta das 19:00 às 21:30h"
   },
   {
     id: "futebol",
-    title: "Futebol",
-    description:
-      "Promovendo trabalho em equipe, disciplina e habilidades motoras através do esporte mais popular do Brasil.",
+    title: "Futebol e Futsal",
+    description: "Modalidades muito populares entre crianças e adolescentes, proporcionando uma forma segura e saudável de lazer. Essas atividades incentivam a prática esportiva regular e ensinam a importância do jogo limpo e do trabalho em equipe.",
     image: "/children-playing-soccer-football.png",
-    age: "6-18 anos",
+    age: "Todas as idades",
     color: "bg-green-100 text-green-800",
-  },
-  {
-    id: "judo",
-    title: "Judô",
-    description: "Ensinando respeito, autocontrole e defesa pessoal através desta arte marcial milenar.",
-    image: "/children-judo-martial-arts-class.png",
-    age: "5-17 anos",
-    color: "bg-blue-100 text-blue-800",
-  },
-  {
-    id: "capoeira",
-    title: "Capoeira",
-    description: "Celebrando a cultura brasileira através desta arte que combina luta, dança e música.",
-    image: "/children-capoeira-brazilian-martial-arts.png",
-    age: "6-16 anos",
-    color: "bg-yellow-100 text-yellow-800",
+    students: "136 alunos (futebol) + 223 alunos (futsal)",
+    schedule: "Segunda, quarta e sexta das 19:30 às 21:00h | Sábado das 8:30 às 11:30h"
   },
   {
     id: "volei",
     title: "Vôlei",
-    description: "Desenvolvendo coordenação, estratégia e espírito de equipe através do voleibol.",
+    description: "Promove a interação social, o trabalho em equipe e a coordenação. Essa atividade se tornou uma das preferidas dos jovens, com aulas práticas e dinâmicas que envolvem o grupo e desenvolvem habilidades coletivas.",
     image: "/children-volleyball-team-sport.png",
-    age: "8-18 anos",
+    age: "Todas as idades",
     color: "bg-purple-100 text-purple-800",
+    students: "37 alunos",
+    schedule: "Sábado das 8:00 às 11:30h"
   },
   {
-    id: "natacao",
-    title: "Natação",
-    description: "Promovendo saúde e segurança aquática através do ensino da natação.",
-    image: "/children-swimming-pool-lessons.png",
-    age: "4-18 anos",
-    color: "bg-cyan-100 text-cyan-800",
+    id: "ballet",
+    title: "Ballet",
+    description: "Com foco no público infantil e juvenil, o ballet é uma das atividades mais populares entre as crianças, proporcionando uma forma de expressão corporal e emocional. Trabalha a elegância, coordenação motora e postura dos alunos.",
+    image: "/children-ballet-class-dancing.png",
+    age: "Infantil e juvenil",
+    color: "bg-pink-100 text-pink-800",
+    students: "75 alunas",
+    schedule: "Sábado das 9:00 às 10:30h"
+  },
+  {
+    id: "jazz",
+    title: "Jazz",
+    description: "Tem atraído principalmente jovens e adolescentes, que veem no jazz uma forma de expressão e de conexão com a música. Contribui para a flexibilidade e o ritmo, além de promover a criatividade e a autoestima.",
+    image: "/children-ballet-class-dancing.png",
+    age: "Jovens e adolescentes",
+    color: "bg-purple-100 text-purple-800",
+    students: "75 alunas (junto com ballet)",
+    schedule: "Sábado das 10:30 às 11:30h"
+  },
+  {
+    id: "zumba",
+    title: "Zumba",
+    description: "Combinando exercícios físicos com ritmos musicais animados, a zumba se tornou uma atividade bastante popular, atraindo não só jovens, mas também adultos que desejam manter a forma de maneira descontraída. O foco é promover bem-estar e saúde, além de estimular a autoestima e a socialização.",
+    image: "/children-ballet-class-dancing.png",
+    age: "Jovens e adultos",
+    color: "bg-orange-100 text-orange-800",
+    students: "38 alunas",
+    schedule: "Sexta das 19:00 às 20:30h"
+  },
+  {
+    id: "capoeira",
+    title: "Capoeira",
+    description: "Contribui para o desenvolvimento físico, equilíbrio, mobilidade e a flexibilidade dos alunos e incentiva o trabalho em grupo e o respeito pela cultura afro-brasileira, por meio de atividades que misturam artes marciais, música e dança. Também traz uma rica bagagem cultural, que desperta o interesse dos participantes pela história e pela cultura brasileira.",
+    image: "/children-capoeira-brazilian-martial-arts.png",
+    age: "Todas as idades",
+    color: "bg-yellow-100 text-yellow-800",
+    students: "23 alunos",
+    schedule: "Quarta e sexta das 20:00 às 21:30h"
+  },
+  {
+    id: "bateria",
+    title: "Bateria",
+    description: "Oferece um canal de expressão artística, estimulando habilidades motoras e o gosto pela música. A atividade tem atraído crianças e adolescentes interessados em desenvolver o senso rítmico e trabalhar a coordenação.",
+    image: "/placeholder.svg",
+    age: "Crianças e adolescentes",
+    color: "bg-gray-100 text-gray-800",
+    students: "32 alunos",
+    schedule: "Segunda das 19:00 às 20:30h | Sábado das 9:00 às 11:00h"
+  },
+  {
+    id: "croche",
+    title: "Crochê",
+    description: "Desenvolve habilidades manuais e criatividade, sendo muito procurada por jovens e adultos interessados em aprender uma nova técnica artística. Em 2024, o crochê se consolidou como uma atividade que, além de ensinar um ofício, promove a socialização e o bem-estar dos participantes.",
+    image: "/placeholder.svg",
+    age: "Jovens e adultos",
+    color: "bg-pink-100 text-pink-800",
+    students: "5 alunas",
+    schedule: "Sábado das 9:30 às 11:00h"
+  },
+  {
+    id: "reforco-escolar",
+    title: "Reforço Escolar",
+    description: "Atendimento focado no auxílio aos alunos que têm dificuldades em matérias como português e matemática. Tem se mostrado fundamental para o desempenho escolar dos alunos, contribuindo para a permanência e o sucesso na escola.",
+    image: "/children-computer-class-digital-inclusion.png",
+    age: "Todas as idades",
+    color: "bg-blue-100 text-blue-800",
+    students: "18 alunos",
+    schedule: "Terça e quinta das 19:00 às 20:30h"
+  },
+  {
+    id: "ingles",
+    title: "Inglês",
+    description: "Prepara os alunos para um mercado de trabalho mais competitivo, ampliando suas possibilidades profissionais e pessoais. Em 2024, expandimos as aulas de inglês devido à alta procura, reforçando a importância do aprendizado de uma segunda língua.",
+    image: "/children-computer-class-digital-inclusion.png",
+    age: "Todas as idades",
+    color: "bg-green-100 text-green-800",
+    students: "15 alunos",
+    schedule: "Terça e quinta das 18:00 às 19:00h"
   },
 ]
 
@@ -93,6 +164,13 @@ export default function AtividadesPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-primary">{activity.students}</span>
+                        <span className="text-xs text-muted-foreground">{activity.age}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-2">{activity.schedule}</p>
+                    </div>
                     <CardDescription className="text-sm leading-relaxed mb-4">{activity.description}</CardDescription>
                     <Link href={`/atividades/${activity.id}`}>
                       <Button className="w-full">Saiba Mais</Button>

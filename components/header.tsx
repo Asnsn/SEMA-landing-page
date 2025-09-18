@@ -8,12 +8,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useState } from "react"
 
 const activities = [
-  { name: "Ballet", href: "/atividades/ballet" },
-  { name: "Futebol", href: "/atividades/futebol" },
-  { name: "Judô", href: "/atividades/judo" },
-  { name: "Capoeira", href: "/atividades/capoeira" },
+  { name: "Kung Fu", href: "/atividades/kung-fu" },
+  { name: "Handebol", href: "/atividades/handebol" },
+  { name: "Futebol e Futsal", href: "/atividades/futebol" },
   { name: "Vôlei", href: "/atividades/volei" },
-  { name: "Natação", href: "/atividades/natacao" },
+  { name: "Ballet", href: "/atividades/ballet" },
+  { name: "Jazz", href: "/atividades/jazz" },
+  { name: "Zumba", href: "/atividades/zumba" },
+  { name: "Capoeira", href: "/atividades/capoeira" },
+  { name: "Bateria", href: "/atividades/bateria" },
+  { name: "Crochê", href: "/atividades/croche" },
+  { name: "Reforço Escolar", href: "/atividades/reforco-escolar" },
+  { name: "Inglês", href: "/atividades/ingles" },
 ]
 
 export function Header() {
