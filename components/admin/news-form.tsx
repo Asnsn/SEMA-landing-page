@@ -157,18 +157,17 @@ export function NewsForm({ initialData }: NewsFormProps) {
         console.log('Upload concluído:', uploadedMedia.length, 'arquivos')
       }
       
-      const dataToSave = {
-        title: formData.title,
-        content: formData.content,
-        excerpt: formData.excerpt,
-        featured_image: formData.featured_image,
-        slug: formData.slug,
-        status: finalStatus,
-        published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        // Temporariamente removido para testar conexão
-        // media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
-        // featured_media_type: formData.featured_media_type,
-      }
+          const dataToSave = {
+            title: formData.title,
+            content: formData.content,
+            excerpt: formData.excerpt,
+            featured_image: formData.featured_image,
+            slug: formData.slug,
+            status: finalStatus,
+            published_at: finalStatus === "published" ? new Date().toISOString() : null,
+            media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+            featured_media_type: formData.featured_media_type,
+          }
       
       console.log('Dados para salvar:', dataToSave)
 

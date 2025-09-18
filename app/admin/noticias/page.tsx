@@ -16,6 +16,8 @@ export default async function NoticiasPage() {
       id,
       title,
       excerpt,
+      featured_image,
+      slug,
       status,
       created_at,
       updated_at,
@@ -91,7 +93,7 @@ export default async function NoticiasPage() {
                   <div className="flex items-center gap-2">
                     {post.status === "published" && (
                       <Button asChild size="sm" variant="outline">
-                        <Link href={`/blog/${post.id}`} target="_blank">
+                        <Link href={`/blog/${post.slug}`} target="_blank">
                           <Eye className="h-4 w-4 mr-1" />
                           Ver
                         </Link>
