@@ -18,19 +18,30 @@ export function AuthGuard({ children, requireSuperAdmin = false }: AuthGuardProp
   useEffect(() => {
     console.log('AuthGuard - loading:', loading, 'isAuthenticated:', isAuthenticated)
     
-    if (!loading) {
-      if (!isAuthenticated) {
-        console.log('AuthGuard - Usuário não autenticado, redirecionando...')
-        // Redirecionar para login se não estiver autenticado
-        router.push("/auth/login-custom")
-        return
+    // Verificar localStorage diretamente para evitar problemas de timing
+    const checkAuthDirectly = () => {
+      try {
+        const storedUser = localStorage.getItem('admin_user')
+        if (storedUser) {
+          const userData = JSON.parse(storedUser)
+          if (userData.logged_in) {
+            console.log('AuthGuard - Usuário autenticado via localStorage direto')
+            setIsChecking(false)
+            return
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar localStorage:', error)
       }
-
-      console.log('AuthGuard - Usuário autenticado, permitindo acesso')
-      // Para o sistema simples, sempre permitir acesso se estiver logado
-      setIsChecking(false)
+      
+      console.log('AuthGuard - Usuário não autenticado, redirecionando...')
+      router.push("/auth/login-custom")
     }
-  }, [loading, isAuthenticated, router])
+    
+    if (!loading) {
+      checkAuthDirectly()
+    }
+  }, [loading, router])
 
   if (loading || isChecking) {
     return (

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Login SEMA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #b91c1c;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .error {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        .info {
+            background-color: #dbeafe;
+            border: 1px solid #3b82f6;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Teste de Login SEMA</h1>
+        <p>Teste o sistema de login simplificado</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" value="admin@sema.org.br" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            
+            <button type="submit">Entrar</button>
+        </form>
+        
+        <div id="result" class="result"></div>
+        
+        <div style="margin-top: 30px;">
+            <h3>📋 Status do Sistema:</h3>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // Função para mostrar resultado
+        function showResult(message, type) {
+            const result = document.getElementById('result');
+            result.textContent = message;
+            result.className = `result ${type}`;
+            result.style.display = 'block';
+        }
+
+        // Função para atualizar status
+        function updateStatus() {
+            const status = document.getElementById('status');
+            const storedUser = localStorage.getItem('admin_user');
+            
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    status.innerHTML = `
+                        <p><strong>✅ Usuário logado:</strong> ${userData.email}</p>
+                        <p><strong>Nome:</strong> ${userData.full_name}</p>
+                        <p><strong>Função:</strong> ${userData.role}</p>
+                        <p><strong>Status:</strong> ${userData.logged_in ? '✅ Logado' : '❌ Não logado'}</p>
+                        <button onclick="logout()" style="background: #6b7280; margin-top: 10px;">Sair</button>
+                    `;
+                } catch (error) {
+                    status.innerHTML = '<p style="color: red;">❌ Erro ao ler dados do usuário</p>';
+                }
+            } else {
+                status.innerHTML = '<p>❌ Nenhum usuário logado</p>';
+            }
+        }
+
+        // Função de logout
+        function logout() {
+            localStorage.removeItem('admin_user');
+            updateStatus();
+            showResult('Logout realizado com sucesso!', 'info');
+        }
+
+        // Função de login
+        function login(email, password) {
+            console.log('Tentando login com:', email, password);
+            
+            // Credenciais válidas
+            const validEmail = "admin@sema.org.br";
+            const validPassword = "admin123";
+            
+            if (email === validEmail && password === validPassword) {
+                console.log('Login válido! Salvando no localStorage...');
+                
+                // Dados do usuário
+                const userData = {
+                    id: 'admin-001',
+                    email: validEmail,
+                    full_name: 'Administrador SEMA',
+                    role: 'super_admin',
+                    logged_in: true
+                };
+                
+                // Salvar no localStorage
+                localStorage.setItem('admin_user', JSON.stringify(userData));
+                console.log('Dados salvos:', userData);
+                
+                // Verificar se foi salvo
+                const saved = localStorage.getItem('admin_user');
+                console.log('Verificação:', saved);
+                
+                showResult('✅ Login realizado com sucesso!', 'success');
+                updateStatus();
+                
+                // Simular redirecionamento
+                setTimeout(() => {
+                    showResult('🔄 Redirecionando para /admin...', 'info');
+                }, 1000);
+                
+                return true;
+            } else {
+                console.log('Credenciais inválidas!');
+                showResult('❌ E-mail ou senha incorretos', 'error');
+                return false;
+            }
+        }
+
+        // Event listener do formulário
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            login(email, password);
+        });
+
+        // Atualizar status ao carregar a página
+        updateStatus();
+        
+        // Atualizar status a cada 2 segundos
+        setInterval(updateStatus, 2000);
+    </script>
+</body>
+</html>

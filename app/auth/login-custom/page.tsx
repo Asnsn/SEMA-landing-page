@@ -64,8 +64,10 @@ export default function CustomLoginPage() {
       console.log('Verificação localStorage:', saved)
       
       console.log('Redirecionando para /admin...')
-      // Redirecionar para o painel admin
-      window.location.href = "/admin"
+      // Redirecionar para o painel admin com delay para garantir que o localStorage seja salvo
+      setTimeout(() => {
+        window.location.href = "/admin"
+      }, 100)
     } else {
       console.log('Credenciais inválidas!')
       setError("E-mail ou senha incorretos")
