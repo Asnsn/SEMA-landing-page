@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, User } from "lucide-react"
+import Link from "next/link"
+import { DeleteUserButton } from "@/components/admin/delete-user-button"
 
 export default async function UsuariosPage() {
   const supabase = await createClient()
@@ -43,9 +45,11 @@ export default async function UsuariosPage() {
           <h1 className="text-3xl font-bold text-gray-900">Administradores</h1>
           <p className="text-gray-600">Gerencie os usuários administradores da SEMA</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Administrador
+        <Button asChild className="bg-primary hover:bg-primary/90">
+          <Link href="/admin/usuarios/novo">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Administrador
+          </Link>
         </Button>
       </div>
 
@@ -84,14 +88,13 @@ export default async function UsuariosPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline">
-                      <Edit className="h-4 w-4 mr-1" />
-                      Editar
+                    <Button asChild size="sm" variant="outline">
+                      <Link href={`/admin/usuarios/${user.id}`}>
+                        <Edit className="h-4 w-4 mr-1" />
+                        Editar
+                      </Link>
                     </Button>
-                    <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent">
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Excluir
-                    </Button>
+                    <DeleteUserButton userId={user.id} userName={user.full_name || user.email} />
                   </div>
                 </div>
               </CardContent>
@@ -109,9 +112,11 @@ export default async function UsuariosPage() {
                 <h3 className="text-lg font-medium text-gray-900">Nenhum administrador encontrado</h3>
                 <p className="text-gray-500">Comece adicionando o primeiro administrador da SEMA.</p>
               </div>
-              <Button className="bg-primary hover:bg-primary/90">
-                <Plus className="h-4 w-4 mr-2" />
-                Adicionar Primeiro Administrador
+              <Button asChild className="bg-primary hover:bg-primary/90">
+                <Link href="/admin/usuarios/novo">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Adicionar Primeiro Administrador
+                </Link>
               </Button>
             </div>
           </CardContent>
