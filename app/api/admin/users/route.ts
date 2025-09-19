@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createUser, getAllUsers } from '@/lib/database/neon'
+import { createUser, getAllUsers } from '@/lib/database/supabase'
+import bcrypt from 'bcryptjs'
 
 export async function GET() {
   try {
@@ -32,8 +33,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash da senha (Base64 encoding)
-    const password_hash = Buffer.from(password).toString('base64')
+    // Hash da senha usando bcrypt
+    const password_hash = await bcrypt.hash(password, 10)
 
     // Criar usuário
     const user = await createUser({
@@ -42,6 +43,13 @@ export async function POST(request: NextRequest) {
       role,
       password_hash
     })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Erro ao criar usuário' },
+        { status: 500 }
+      )
+    }
 
     // Retornar dados do usuário (sem a senha)
     const { password_hash: _, ...userWithoutPassword } = user

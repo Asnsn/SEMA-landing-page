@@ -1,14 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { query } from "@/lib/database/neon"
+import { deleteUser } from "@/lib/database/supabase"
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
 
     // Deletar o usuário
-    const result = await query("DELETE FROM admin_users WHERE id = $1", [id])
+    const success = await deleteUser(id)
 
-    if (result.rowCount === 0) {
+    if (!success) {
       return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 })
     }
 
