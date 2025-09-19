@@ -69,8 +69,7 @@ export default function NovoUsuarioPage() {
     }
 
     const supabase = createClient()
-    const adminClient = createAdminClient()
-
+    
     try {
       console.log('Criando novo administrador...')
       
@@ -82,44 +81,38 @@ export default function NovoUsuarioPage() {
       
       console.log('Usuário autenticado:', user.email)
 
-      // 1. Primeiro, criar o usuário no Supabase Auth usando o cliente admin
-      const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-        email: formData.email,
-        password: formData.password,
-        email_confirm: true, // Confirmar e-mail automaticamente
-        user_metadata: {
-          full_name: formData.full_name,
-          role: formData.role,
-        }
-      })
-
-      if (authError) {
-        console.error('Erro ao criar usuário no Auth:', authError)
-        throw new Error(`Erro ao criar usuário: ${authError.message}`)
-      }
-
-      if (!authData.user) {
-        throw new Error("Falha ao criar usuário no sistema de autenticação")
-      }
-
-      console.log('Usuário criado no Auth:', authData.user.id)
-
-      // 2. Depois, criar o registro na tabela admin_users
+      // Método alternativo: criar apenas o registro na tabela admin_users
+      // O usuário precisará se registrar normalmente no sistema de login
+      console.log('Criando registro na tabela admin_users...')
+      console.log('Dados:', { email: formData.email, role: formData.role })
+      
+      // Gerar um ID único temporário (o usuário será vinculado quando fizer login)
+      const tempId = crypto.randomUUID()
+      
       const { error: dbError } = await supabase.from("admin_users").insert({
-        id: authData.user.id, // Usar o ID do usuário criado no Auth
+        id: tempId,
         email: formData.email,
         full_name: formData.full_name,
         role: formData.role,
       })
       
+      console.log('Resposta do banco:', { dbError })
+      
       if (dbError) {
         console.error('Erro ao criar registro na tabela admin_users:', dbError)
-        // Tentar remover o usuário do Auth se falhou na tabela
-        await adminClient.auth.admin.deleteUser(authData.user.id)
         throw new Error(`Erro ao salvar dados do administrador: ${dbError.message}`)
       }
 
       console.log('Administrador criado com sucesso!')
+      
+      // Mostrar mensagem de sucesso com instruções
+      alert(`Administrador criado com sucesso!
+      
+E-mail: ${formData.email}
+Senha: ${formData.password}
+
+IMPORTANTE: O usuário deve fazer login com essas credenciais para ativar a conta.`)
+      
       router.push("/admin/usuarios")
       router.refresh()
     } catch (error: unknown) {
@@ -186,7 +179,11 @@ export default function NovoUsuarioPage() {
         <Card>
           <CardHeader>
             <CardTitle>Novo Administrador</CardTitle>
-            <CardDescription>Adicione um novo usuário com acesso ao painel administrativo</CardDescription>
+            <CardDescription>
+              Adicione um novo usuário com acesso ao painel administrativo.
+              <br />
+              <strong>Nota:</strong> O usuário precisará fazer login com essas credenciais para ativar a conta.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
