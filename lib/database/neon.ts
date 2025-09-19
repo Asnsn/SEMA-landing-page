@@ -1,8 +1,15 @@
 import { Pool } from 'pg'
 
 // Configuração do pool de conexões PostgreSQL
+// Usar NETLIFY_DATABASE_URL se disponível (Netlify), senão usar DATABASE_URL (local)
+const connectionString = process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL ou NETLIFY_DATABASE_URL não configurada')
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: {
     rejectUnauthorized: false
   }

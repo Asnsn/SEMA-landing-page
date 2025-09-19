@@ -1,15 +1,22 @@
 # Configuração do Neon Database
 
-## Variáveis de Ambiente Necessárias
+## ✅ Neon Conectado via Netlify
 
-Para conectar com o banco Neon, você precisa configurar a seguinte variável:
+Se você já conectou o Neon via Netlify (como mostrado na imagem), as variáveis de ambiente já estão configuradas automaticamente:
 
-### 1. Variável do Banco de Dados
+- `NETLIFY_DATABASE_URL` - Connection string principal
+- `NETLIFY_DATABASE_URL_UNPOOLED` - Connection string sem pool
+
+## Configuração Local (Desenvolvimento)
+
+Para desenvolvimento local, você pode configurar:
+
+### 1. Variável do Banco de Dados (Opcional)
 ```env
 DATABASE_URL=postgresql://username:password@ep-xxxxx.us-east-1.aws.neon.tech/neondb?sslmode=require
 ```
 
-## Como Obter a Connection String
+## Como Obter a Connection String (se necessário)
 
 1. **Acesse o Dashboard do Neon**
 2. **Vá para o seu projeto**
@@ -17,13 +24,11 @@ DATABASE_URL=postgresql://username:password@ep-xxxxx.us-east-1.aws.neon.tech/neo
 4. **Copie a "Connection String"**
 5. **Adicione no seu arquivo `.env.local`**
 
-## Configuração no Netlify
+## ✅ Configuração no Netlify (Já Feita)
 
-1. **Vá para Site Settings > Environment Variables**
-2. **Adicione a variável:**
-   - **Key:** `DATABASE_URL`
-   - **Value:** sua connection string do Neon
-3. **Redeploy o site**
+Se você conectou o Neon via Netlify, as variáveis já estão configuradas:
+- ✅ `NETLIFY_DATABASE_URL` - Configurada automaticamente
+- ✅ `NETLIFY_DATABASE_URL_UNPOOLED` - Configurada automaticamente
 
 ## Exemplo de Connection String
 
