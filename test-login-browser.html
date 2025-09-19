@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login - SEMA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #4CAF50; background-color: #f1f8e9; }
+        .error { border-color: #f44336; background-color: #ffebee; }
+        .info { border-color: #2196F3; background-color: #e3f2fd; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .loading { color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste de Login - SEMA</h1>
+        <p>Esta página testa o sistema de login sem precisar de deploy no Netlify.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Instruções:</h3>
+            <ol>
+                <li>Clique em "Testar Conexão" primeiro</li>
+                <li>Clique em "Testar Login Real"</li>
+                <li>Clique em "Testar Login Debug"</li>
+                <li>Verifique os resultados abaixo</li>
+            </ol>
+        </div>
+
+        <div>
+            <button onclick="testConnection()">1️⃣ Testar Conexão</button>
+            <button onclick="testRealLogin()">2️⃣ Testar Login Real</button>
+            <button onclick="testDebugLogin()">3️⃣ Testar Login Debug</button>
+            <button onclick="clearResults()">🗑️ Limpar Resultados</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const loginData = {
+            email: 'admin@sema.org.br',
+            password: 'admin123'
+        };
+
+        function addResult(title, status, data, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-section ${type}`;
+            
+            const statusText = status === 200 ? '✅ SUCESSO' : '❌ ERRO';
+            const statusColor = status === 200 ? 'success' : 'error';
+            
+            resultDiv.innerHTML = `
+                <h3>${title} - ${statusText}</h3>
+                <p><strong>Status HTTP:</strong> ${status}</p>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            
+            resultDiv.className = `test-section ${statusColor}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function makeRequest(url, data = null) {
+            try {
+                const options = {
+                    method: data ? 'POST' : 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                return {
+                    status: response.status,
+                    data: result
+                };
+            } catch (error) {
+                return {
+                    status: 'ERROR',
+                    data: { error: error.message }
+                };
+            }
+        }
+
+        async function testConnection() {
+            addResult('🔄 Testando Conexão...', 'loading', { message: 'Carregando...' }, 'info');
+            
+            const result = await makeRequest('/api/test-connection');
+            addResult('1️⃣ Teste de Conexão', result.status, result.data);
+        }
+
+        async function testRealLogin() {
+            addResult('🔄 Testando Login Real...', 'loading', { message: 'Carregando...' }, 'info');
+            
+            const result = await makeRequest('/api/auth/login', loginData);
+            addResult('2️⃣ Teste de Login Real', result.status, result.data);
+        }
+
+        async function testDebugLogin() {
+            addResult('🔄 Testando Login Debug...', 'loading', { message: 'Carregando...' }, 'info');
+            
+            const result = await makeRequest('/api/debug-login', loginData);
+            addResult('3️⃣ Teste de Login Debug', result.status, result.data);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Teste automático ao carregar a página
+        window.onload = function() {
+            console.log('Página de teste carregada. Clique nos botões para testar.');
+        };
+    </script>
+</body>
+</html>
