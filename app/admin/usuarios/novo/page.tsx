@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Removido: import { createAdminClient } from "@/lib/supabase/admin"
 import { Save, ArrowLeft, UserPlus, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { AuthGuard } from "@/components/admin/auth-guard"
 
 export default function NovoUsuarioPage() {
   const router = useRouter()
@@ -141,7 +142,8 @@ O usuário já pode fazer login com essas credenciais!`)
   }
 
   return (
-    <div className="space-y-6">
+    <AuthGuard requireSuperAdmin={true}>
+      <div className="space-y-6">
       {/* Botões de Ação */}
       <div className="flex items-center justify-between">
         <Button asChild variant="outline">
@@ -266,6 +268,7 @@ O usuário já pode fazer login com essas credenciais!`)
           </CardContent>
         </Card>
       </form>
-    </div>
+      </div>
+    </AuthGuard>
   )
 }

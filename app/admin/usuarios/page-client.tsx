@@ -1,0 +1,174 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Plus, Edit, Trash2, User } from "lucide-react"
+import Link from "next/link"
+import { DeleteUserButton } from "@/components/admin/delete-user-button"
+import { AuthGuard } from "@/components/admin/auth-guard"
+import { Loader2 } from "lucide-react"
+
+interface AdminUser {
+  id: string
+  email: string
+  full_name: string
+  role: string
+  created_at: string
+  updated_at: string
+}
+
+export default function UsuariosPageClient() {
+  const [users, setUsers] = useState<AdminUser[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/admin/users')
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Erro ao buscar usuários')
+        }
+
+        setUsers(data.users)
+      } catch (error) {
+        console.error('Erro ao buscar usuários:', error)
+        setError('Erro ao carregar usuários')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
+  }, [])
+
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case "super_admin":
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Super Admin</Badge>
+      case "admin":
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Admin</Badge>
+      default:
+        return <Badge variant="secondary">{role}</Badge>
+    }
+  }
+
+  if (loading) {
+    return (
+      <AuthGuard>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Carregando usuários...</span>
+          </div>
+        </div>
+      </AuthGuard>
+    )
+  }
+
+  if (error) {
+    return (
+      <AuthGuard>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <p className="text-red-600">{error}</p>
+          </div>
+        </div>
+      </AuthGuard>
+    )
+  }
+
+  return (
+    <AuthGuard>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Administradores</h1>
+            <p className="text-gray-600">Gerencie os usuários administradores da SEMA</p>
+          </div>
+          <Button asChild className="bg-primary hover:bg-primary/90">
+            <Link href="/admin/usuarios/novo">
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Administrador
+            </Link>
+          </Button>
+        </div>
+
+        {/* Lista de Usuários */}
+        {users && users.length > 0 ? (
+          <div className="grid gap-6">
+            {users.map((user) => (
+              <Card key={user.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl">{user.full_name || "Nome não informado"}</CardTitle>
+                          <CardDescription className="text-base">{user.email}</CardDescription>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">{getRoleBadge(user.role)}</div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500 space-y-1">
+                      <p>
+                        <strong>ID:</strong> {user.id}
+                      </p>
+                      <p>
+                        <strong>Criado em:</strong> {new Date(user.created_at).toLocaleDateString("pt-BR")}
+                      </p>
+                      <p>
+                        <strong>Última atualização:</strong> {new Date(user.updated_at).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={`/admin/usuarios/${user.id}`}>
+                          <Edit className="h-4 w-4 mr-1" />
+                          Editar
+                        </Link>
+                      </Button>
+                      <DeleteUserButton userId={user.id} userName={user.full_name || user.email} />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <CardContent className="text-center py-12">
+              <div className="space-y-4">
+                <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                  <User className="h-6 w-6 text-gray-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">Nenhum administrador encontrado</h3>
+                  <p className="text-gray-500">Comece adicionando o primeiro administrador da SEMA.</p>
+                </div>
+                <Button asChild className="bg-primary hover:bg-primary/90">
+                  <Link href="/admin/usuarios/novo">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Adicionar Primeiro Administrador
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </AuthGuard>
+  )
+}
