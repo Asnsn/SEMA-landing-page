@@ -5,24 +5,20 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-// Verificar se as variáveis estão configuradas (apenas em runtime, não durante build)
-if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("Variáveis de ambiente do Supabase não configuradas")
-  }
+// Verificar se as variáveis estão configuradas
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Variáveis de ambiente do Supabase não configuradas. Verifique NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY")
+}
+
+if (!supabaseServiceKey) {
+  throw new Error("Variável SUPABASE_SERVICE_ROLE_KEY não configurada")
 }
 
 // Cliente público (para operações do lado do cliente)
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Cliente com service role (para operações administrativas)
-export const supabaseAdmin = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseServiceKey || 'placeholder-service-key'
-)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 // Interface para usuário admin
 export interface AdminUser {
