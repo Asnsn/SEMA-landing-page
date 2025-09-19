@@ -8,7 +8,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <img 
-                src="/sema-logo.jpg" 
+                src="/sema-logo ofc.jpg" 
                 alt="SEMA Logo" 
                 className="h-8 w-8 rounded-full object-cover"
               />
