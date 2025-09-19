@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { Save, ArrowLeft, UserPlus, Loader2 } from "lucide-react"
 import Link from "next/link"
 
@@ -19,6 +20,8 @@ export default function NovoUsuarioPage() {
     email: "",
     full_name: "",
     role: "admin",
+    password: "",
+    confirmPassword: "",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +42,24 @@ export default function NovoUsuarioPage() {
       return
     }
 
+    if (!formData.password.trim()) {
+      setError("A senha é obrigatória")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres")
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("As senhas não coincidem")
+      setIsLoading(false)
+      return
+    }
+
     // Validação de e-mail
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
@@ -48,6 +69,7 @@ export default function NovoUsuarioPage() {
     }
 
     const supabase = createClient()
+    const adminClient = createAdminClient()
 
     try {
       console.log('Criando novo administrador...')
@@ -60,15 +82,42 @@ export default function NovoUsuarioPage() {
       
       console.log('Usuário autenticado:', user.email)
 
-      // Criar novo administrador
-      const { error } = await supabase.from("admin_users").insert({
-        id: user.id, // Usar o mesmo ID do usuário autenticado
+      // 1. Primeiro, criar o usuário no Supabase Auth usando o cliente admin
+      const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+        email: formData.email,
+        password: formData.password,
+        email_confirm: true, // Confirmar e-mail automaticamente
+        user_metadata: {
+          full_name: formData.full_name,
+          role: formData.role,
+        }
+      })
+
+      if (authError) {
+        console.error('Erro ao criar usuário no Auth:', authError)
+        throw new Error(`Erro ao criar usuário: ${authError.message}`)
+      }
+
+      if (!authData.user) {
+        throw new Error("Falha ao criar usuário no sistema de autenticação")
+      }
+
+      console.log('Usuário criado no Auth:', authData.user.id)
+
+      // 2. Depois, criar o registro na tabela admin_users
+      const { error: dbError } = await supabase.from("admin_users").insert({
+        id: authData.user.id, // Usar o ID do usuário criado no Auth
         email: formData.email,
         full_name: formData.full_name,
         role: formData.role,
       })
       
-      if (error) throw error
+      if (dbError) {
+        console.error('Erro ao criar registro na tabela admin_users:', dbError)
+        // Tentar remover o usuário do Auth se falhou na tabela
+        await adminClient.auth.admin.deleteUser(authData.user.id)
+        throw new Error(`Erro ao salvar dados do administrador: ${dbError.message}`)
+      }
 
       console.log('Administrador criado com sucesso!')
       router.push("/admin/usuarios")
@@ -163,6 +212,36 @@ export default function NovoUsuarioPage() {
               />
               <p className="text-xs text-gray-500">
                 Este e-mail será usado para autenticação no sistema
+              </p>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="password">Senha *</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
+                placeholder="Mínimo 6 caracteres"
+                required
+              />
+              <p className="text-xs text-gray-500">
+                A senha deve ter pelo menos 6 caracteres
+              </p>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+                placeholder="Digite a senha novamente"
+                required
+              />
+              <p className="text-xs text-gray-500">
+                Digite a mesma senha para confirmar
               </p>
             </div>
 
