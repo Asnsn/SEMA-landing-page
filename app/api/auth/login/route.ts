@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "E-mail e senha são obrigatórios" }, { status: 400 })
     }
 
-    if (!process.env.JWT_SECRET) {
+    const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET
+    if (!jwtSecret) {
       console.error("[v0] JWT_SECRET não configurado")
       return NextResponse.json({ error: "Configuração do servidor incompleta" }, { status: 500 })
     }
@@ -42,15 +43,15 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[v0] Gerando token JWT...")
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" },
-    )
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        jwtSecret,
+        { expiresIn: "24h" },
+      )
 
     // Retornar dados do usuário (sem a senha)
     const userData = {
