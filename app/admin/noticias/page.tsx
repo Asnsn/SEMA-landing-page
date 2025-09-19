@@ -4,31 +4,14 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Plus, Edit, Eye } from "lucide-react"
 import { DeleteNewsButton } from "@/components/admin/delete-news-button"
-import { query } from "@/lib/database/neon"
+import { getNewsPosts } from "@/lib/database/supabase"
 
 export default async function NoticiasPage() {
   let posts: any[] = []
 
   try {
-    const result = await query(`
-      SELECT 
-        np.id,
-        np.title,
-        np.excerpt,
-        np.featured_image,
-        np.slug,
-        np.status,
-        np.created_at,
-        np.updated_at,
-        np.published_at,
-        au.full_name,
-        au.email
-      FROM news_posts np
-      LEFT JOIN admin_users au ON np.author_id = au.id
-      ORDER BY np.created_at DESC
-    `)
-
-    posts = result.rows || []
+    const allPosts = await getNewsPosts()
+    posts = allPosts || []
   } catch (error) {
     console.error("Erro ao buscar notícias:", error)
     posts = []

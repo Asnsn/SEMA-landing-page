@@ -1,6 +1,6 @@
 import { NewsForm } from "@/components/admin/news-form"
 import { notFound } from "next/navigation"
-import { query } from "@/lib/database/neon"
+import { supabaseAdmin } from "@/lib/database/supabase"
 
 interface EditNoticiaPageProps {
   params: Promise<{ id: string }>
@@ -12,30 +12,31 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
   let post: any = null
 
   try {
-    const result = await query(
-      `
-      SELECT 
-        np.id,
-        np.title,
-        np.content,
-        np.excerpt,
-        np.featured_image,
-        np.slug,
-        np.status,
-        np.created_at,
-        np.updated_at,
-        np.published_at,
-        au.full_name,
-        au.email
-      FROM news_posts np
-      LEFT JOIN admin_users au ON np.author_id = au.id
-      WHERE np.id = $1
-    `,
-      [id],
-    )
+    const { data, error } = await supabaseAdmin
+      .from('news_posts')
+      .select(`
+        id,
+        title,
+        content,
+        excerpt,
+        featured_image,
+        slug,
+        status,
+        created_at,
+        updated_at,
+        published_at,
+        author_id,
+        admin_users!inner(full_name, email)
+      `)
+      .eq('id', id)
+      .single()
 
-    if (result.rows.length > 0) {
-      post = result.rows[0]
+    if (data && !error) {
+      post = {
+        ...data,
+        full_name: data.admin_users?.full_name,
+        email: data.admin_users?.email
+      }
     }
   } catch (error) {
     console.error("Erro ao buscar notícia:", error)

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs"
-import { getUserByEmail } from "./database/neon"
+import { getUserByEmail } from "./database/supabase"
 
 export interface AuthUser {
   id: string

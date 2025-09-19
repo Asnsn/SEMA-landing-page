@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, Calendar, User } from "lucide-react"
-import { query } from "@/lib/database/neon"
+import { supabaseAdmin } from "@/lib/database/supabase"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -17,28 +17,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   let post: any = null
 
   try {
-    const result = await query(
-      `
-      SELECT 
-        np.id,
-        np.title,
-        np.content,
-        np.excerpt,
-        np.featured_image,
-        np.slug,
-        np.created_at,
-        np.published_at,
-        au.full_name,
-        au.email
-      FROM news_posts np
-      LEFT JOIN admin_users au ON np.author_id = au.id
-      WHERE np.slug = $1 AND np.status = 'published'
-    `,
-      [slug],
-    )
+    const { data, error } = await supabaseAdmin
+      .from('news_posts')
+      .select(`
+        id,
+        title,
+        content,
+        excerpt,
+        featured_image,
+        slug,
+        created_at,
+        published_at,
+        author_id,
+        admin_users!inner(full_name, email)
+      `)
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single()
 
-    if (result.rows.length > 0) {
-      post = result.rows[0]
+    if (data && !error) {
+      post = {
+        ...data,
+        full_name: data.admin_users?.full_name,
+        email: data.admin_users?.email
+      }
     }
   } catch (error) {
     console.error("Erro ao buscar post:", error)

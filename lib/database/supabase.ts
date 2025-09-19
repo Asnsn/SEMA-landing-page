@@ -1,19 +1,28 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Configuração do Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Variáveis de ambiente do Supabase não configuradas")
+// Verificar se as variáveis estão configuradas (apenas em runtime, não durante build)
+if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn("Variáveis de ambiente do Supabase não configuradas")
+  }
 }
 
 // Cliente público (para operações do lado do cliente)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
+)
 
 // Cliente com service role (para operações administrativas)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+export const supabaseAdmin = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseServiceKey || 'placeholder-service-key'
+)
 
 // Interface para usuário admin
 export interface AdminUser {

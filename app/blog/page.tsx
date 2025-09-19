@@ -4,29 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { query } from "@/lib/database/neon"
+import { getNewsPosts } from "@/lib/database/supabase"
 
 export default async function BlogPage() {
   let blogPosts: any[] = []
 
   try {
-    const result = await query(`
-      SELECT 
-        np.id,
-        np.title,
-        np.excerpt,
-        np.featured_image,
-        np.slug,
-        np.created_at,
-        np.published_at,
-        au.full_name
-      FROM news_posts np
-      LEFT JOIN admin_users au ON np.author_id = au.id
-      WHERE np.status = 'published'
-      ORDER BY np.published_at DESC
-    `)
-
-    blogPosts = result.rows || []
+    const posts = await getNewsPosts('published')
+    blogPosts = posts || []
   } catch (error) {
     console.error("Erro ao buscar posts:", error)
     blogPosts = []
