@@ -73,64 +73,33 @@ export default function NovoUsuarioPage() {
     try {
       console.log('Criando novo administrador...')
       
-      // Verificar se o usuário está autenticado
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Usuário não autenticado")
+      // Verificar se o usuário está autenticado (usando nosso sistema customizado)
+      const storedUser = localStorage.getItem('admin_user')
+      if (!storedUser) throw new Error("Usuário não autenticado")
       
-      console.log('Usuário autenticado:', user.email)
+      const currentUser = JSON.parse(storedUser)
+      if (!currentUser.logged_in) throw new Error("Usuário não autenticado")
+      
+      console.log('Usuário autenticado:', currentUser.email)
 
-      // Verificar se a Service Role Key está configurada
-      if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        throw new Error("SUPABASE_SERVICE_ROLE_KEY não está configurada. Adicione esta variável no seu .env.local e no Netlify.")
-      }
-
-      const adminClient = createAdminClient()
-
-      // 1. Primeiro, criar o usuário no Supabase Auth
-      console.log('Criando usuário no Supabase Auth...')
+      // Criar usuário apenas na tabela admin_users (sem Supabase Auth)
+      console.log('Criando usuário na tabela admin_users...')
       console.log('Dados:', { email: formData.email, role: formData.role })
       
-      const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-        email: formData.email,
-        password: formData.password,
-        email_confirm: true, // Confirmar e-mail automaticamente
-        user_metadata: {
-          full_name: formData.full_name,
-          role: formData.role,
-        }
-      })
-
-      console.log('Resposta do Auth:', { authData, authError })
-
-      if (authError) {
-        console.error('Erro ao criar usuário no Auth:', authError)
-        throw new Error(`Erro ao criar usuário: ${authError.message}`)
-      }
-
-      if (!authData.user) {
-        throw new Error("Falha ao criar usuário no sistema de autenticação")
-      }
-
-      console.log('Usuário criado no Auth:', authData.user.id)
-
-      // 2. Depois, criar o registro na tabela admin_users
-      console.log('Criando registro na tabela admin_users...')
+      // Hash da senha (simples - em produção use bcrypt)
+      const hashedPassword = btoa(formData.password) // Base64 encoding
+      
       const { error: dbError } = await supabase.from("admin_users").insert({
-        id: authData.user.id, // Usar o ID do usuário criado no Auth
         email: formData.email,
         full_name: formData.full_name,
         role: formData.role,
+        password_hash: hashedPassword, // Adicionar campo de senha
       })
       
       console.log('Resposta do banco:', { dbError })
       
       if (dbError) {
         console.error('Erro ao criar registro na tabela admin_users:', dbError)
-        // Tentar remover o usuário do Auth se falhou na tabela
-        console.log('Tentando remover usuário do Auth...')
-        await adminClient.auth.admin.deleteUser(authData.user.id)
         throw new Error(`Erro ao salvar dados do administrador: ${dbError.message}`)
       }
 
