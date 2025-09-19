@@ -39,11 +39,11 @@ export default function ContatoPage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Rua das Flores, 123
+                      Rua Lidia Lopes Moreira, 278
                       <br />
                       Hortolândia - SP
                       <br />
-                      CEP: 13184-000
+                      CEP: 13184-696 - Jd Carmen Cristina
                     </p>
                   </CardContent>
                 </Card>
@@ -56,7 +56,7 @@ export default function ContatoPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">(19) 3865-1234</p>
+                    <p className="text-muted-foreground">+55 (19) 98917-8896</p>
                   </CardContent>
                 </Card>
 
