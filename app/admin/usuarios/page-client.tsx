@@ -25,25 +25,18 @@ export default function UsuariosPageClient() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('/api/admin/users')
-        const data = await response.json()
+    // Sistema simplificado - apenas mostrar o usuário admin
+    const mockUsers = [{
+      id: 'admin-001',
+      email: 'admin@sema.org.br',
+      full_name: 'Administrador SEMA',
+      role: 'super_admin',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }]
 
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao buscar usuários')
-        }
-
-        setUsers(data.users)
-      } catch (error) {
-        console.error('Erro ao buscar usuários:', error)
-        setError('Erro ao carregar usuários')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchUsers()
+    setUsers(mockUsers)
+    setLoading(false)
   }, [])
 
   const getRoleBadge = (role: string) => {

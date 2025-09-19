@@ -81,41 +81,18 @@ export default function NovoUsuarioPage() {
       
       console.log('Usuário autenticado:', currentUser.email)
 
-      // Fazer requisição para a API de criação de usuário
-      const response = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          full_name: formData.full_name,
-          role: formData.role,
-          password: formData.password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao criar usuário')
-      }
-
-      if (!data.success) {
-        throw new Error('Erro ao criar usuário')
-      }
-
-      console.log('Usuário criado com sucesso:', data.user)
-
-      console.log('Administrador criado com sucesso!')
+      // Sistema simplificado - apenas simular criação
+      console.log('Sistema simplificado - usuário seria criado:', formData.email)
       
       // Mostrar mensagem de sucesso
-      alert(`Administrador criado com sucesso!
-      
-E-mail: ${formData.email}
-Senha: ${formData.password}
+      alert(`Sistema Simplificado!
 
-O usuário já pode fazer login com essas credenciais!`)
+Usuário que seria criado:
+E-mail: ${formData.email}
+Nome: ${formData.full_name}
+Função: ${formData.role}
+
+No sistema atual, apenas o admin@sema.org.br tem acesso.`)
       
       router.push("/admin/usuarios")
       router.refresh()

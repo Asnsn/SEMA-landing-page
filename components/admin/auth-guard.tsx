@@ -23,15 +23,10 @@ export function AuthGuard({ children, requireSuperAdmin = false }: AuthGuardProp
         return
       }
 
-      if (requireSuperAdmin && !isSuperAdmin) {
-        // Redirecionar para página de erro se não for super admin
-        router.push("/admin/unauthorized")
-        return
-      }
-
+      // Para o sistema simples, sempre permitir acesso se estiver logado
       setIsChecking(false)
     }
-  }, [loading, isAuthenticated, isSuperAdmin, requireSuperAdmin, router])
+  }, [loading, isAuthenticated, router])
 
   if (loading || isChecking) {
     return (

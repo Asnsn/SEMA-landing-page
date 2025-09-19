@@ -37,62 +37,28 @@ export default function CustomLoginPage() {
       return
     }
 
-    try {
-      console.log('Tentando fazer login...')
-      console.log('Email:', formData.email)
-      
-      // Fazer requisição para a API de login
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      })
+    // Login simples - sem banco de dados
+    const validEmail = "admin@sema.org.br"
+    const validPassword = "admin123"
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro no login')
-      }
-
-      if (!data.success) {
-        throw new Error('Erro no login')
-      }
-
-      const user = data.user
-      console.log('Login bem-sucedido:', user.email)
-
-      // Simular login criando uma sessão simples
-      // Em produção, você usaria JWT ou cookies seguros
+    if (formData.email === validEmail && formData.password === validPassword) {
+      // Login bem-sucedido
       localStorage.setItem('admin_user', JSON.stringify({
-        id: user.id,
-        email: user.email,
-        full_name: user.full_name,
-        role: user.role,
+        id: 'admin-001',
+        email: validEmail,
+        full_name: 'Administrador SEMA',
+        role: 'super_admin',
         logged_in: true
       }))
 
       // Redirecionar para o painel admin
       router.push("/admin")
       router.refresh()
-      
-    } catch (error: unknown) {
-      console.error('Erro no login:', error)
-      
-      let errorMessage = "Ocorreu um erro inesperado"
-      
-      if (error instanceof Error) {
-        errorMessage = error.message
-      }
-      
-      setError(errorMessage)
-    } finally {
-      setIsLoading(false)
+    } else {
+      setError("E-mail ou senha incorretos")
     }
+
+    setIsLoading(false)
   }
 
   return (
