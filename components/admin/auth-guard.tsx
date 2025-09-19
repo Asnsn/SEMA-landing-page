@@ -16,13 +16,17 @@ export function AuthGuard({ children, requireSuperAdmin = false }: AuthGuardProp
   const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
+    console.log('AuthGuard - loading:', loading, 'isAuthenticated:', isAuthenticated)
+    
     if (!loading) {
       if (!isAuthenticated) {
+        console.log('AuthGuard - Usuário não autenticado, redirecionando...')
         // Redirecionar para login se não estiver autenticado
         router.push("/auth/login-custom")
         return
       }
 
+      console.log('AuthGuard - Usuário autenticado, permitindo acesso')
       // Para o sistema simples, sempre permitir acesso se estiver logado
       setIsChecking(false)
     }

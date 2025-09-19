@@ -41,20 +41,33 @@ export default function CustomLoginPage() {
     const validEmail = "admin@sema.org.br"
     const validPassword = "admin123"
 
+    console.log('Tentando login com:', formData.email, formData.password)
+    console.log('Credenciais válidas:', validEmail, validPassword)
+
     if (formData.email === validEmail && formData.password === validPassword) {
+      console.log('Login válido! Salvando no localStorage...')
+      
       // Login bem-sucedido
-      localStorage.setItem('admin_user', JSON.stringify({
+      const userData = {
         id: 'admin-001',
         email: validEmail,
         full_name: 'Administrador SEMA',
         role: 'super_admin',
         logged_in: true
-      }))
-
+      }
+      
+      localStorage.setItem('admin_user', JSON.stringify(userData))
+      console.log('Dados salvos no localStorage:', userData)
+      
+      // Verificar se foi salvo
+      const saved = localStorage.getItem('admin_user')
+      console.log('Verificação localStorage:', saved)
+      
+      console.log('Redirecionando para /admin...')
       // Redirecionar para o painel admin
-      router.push("/admin")
-      router.refresh()
+      window.location.href = "/admin"
     } else {
+      console.log('Credenciais inválidas!')
       setError("E-mail ou senha incorretos")
     }
 

@@ -18,12 +18,22 @@ export function useAdminAuth() {
     // Verificar se há usuário logado no localStorage
     const checkAuth = () => {
       try {
+        console.log('useAdminAuth - Verificando autenticação...')
         const storedUser = localStorage.getItem('admin_user')
+        console.log('useAdminAuth - storedUser:', storedUser)
+        
         if (storedUser) {
           const userData = JSON.parse(storedUser)
+          console.log('useAdminAuth - userData:', userData)
+          
           if (userData.logged_in) {
+            console.log('useAdminAuth - Usuário logado encontrado:', userData.email)
             setUser(userData)
+          } else {
+            console.log('useAdminAuth - Usuário não está logado')
           }
+        } else {
+          console.log('useAdminAuth - Nenhum usuário encontrado no localStorage')
         }
       } catch (error) {
         console.error('Erro ao verificar autenticação:', error)
