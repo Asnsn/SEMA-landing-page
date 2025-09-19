@@ -33,7 +33,7 @@ export default function HandebolPage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/children-volleyball-team-sport.png"
+                  src="/handebol.jpeg"
                   alt="Handebol SEMA"
                   className="w-full h-full object-cover"
                 />

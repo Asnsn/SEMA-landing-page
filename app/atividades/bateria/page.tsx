@@ -33,7 +33,7 @@ export default function BateriaPage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/placeholder.svg"
+                  src="/bateria.jpeg"
                   alt="Bateria SEMA"
                   className="w-full h-full object-cover"
                 />

@@ -33,7 +33,7 @@ export default function JazzPage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/children-ballet-class-dancing.png"
+                  src="/Jazz.jpeg"
                   alt="Jazz SEMA"
                   className="w-full h-full object-cover"
                 />

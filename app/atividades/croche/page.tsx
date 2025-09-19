@@ -33,7 +33,7 @@ export default function CrochePage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/placeholder.svg"
+                  src="/chroche.jpeg"
                   alt="Crochê SEMA"
                   className="w-full h-full object-cover"
                 />

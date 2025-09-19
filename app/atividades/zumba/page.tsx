@@ -34,7 +34,7 @@ export default function ZumbaPage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/children-ballet-class-dancing.png"
+                  src="/zumba.jpeg"
                   alt="Zumba SEMA"
                   className="w-full h-full object-cover"
                 />

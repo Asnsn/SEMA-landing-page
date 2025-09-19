@@ -33,7 +33,7 @@ export default function InglesPage() {
               </div>
               <div className="aspect-square overflow-hidden rounded-lg">
                 <img
-                  src="/children-computer-class-digital-inclusion.png"
+                  src="/ingles.jpeg"
                   alt="Inglês SEMA"
                   className="w-full h-full object-cover"
                 />
