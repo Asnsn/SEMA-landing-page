@@ -2,20 +2,33 @@
 
 import { Button } from "@/components/ui/button"
 import { Menu, Bell } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AdminMobileSidebar } from "./admin-mobile-sidebar"
 
-interface AdminHeaderProps {
-  user: {
+export function AdminHeader() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [user, setUser] = useState<{
     id: string
     email: string
     full_name: string | null
     role: string
-  }
-}
+  } | null>(null)
 
-export function AdminHeader({ user }: AdminHeaderProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  useEffect(() => {
+    const userData = localStorage.getItem("admin_user")
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData)
+        setUser(parsedUser)
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error)
+      }
+    }
+  }, [])
+
+  if (!user) {
+    return null
+  }
 
   return (
     <>

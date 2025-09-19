@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -7,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createClient } from "@/lib/supabase/client"
 import { Save, ArrowLeft, User, Loader2, Trash2 } from "lucide-react"
 import Link from "next/link"
 
@@ -23,7 +24,7 @@ export default function EditarUsuarioPage() {
   const router = useRouter()
   const params = useParams()
   const userId = params.id as string
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -38,30 +39,28 @@ export default function EditarUsuarioPage() {
   useEffect(() => {
     const loadUser = async () => {
       if (!userId) return
-      
-      const supabase = createClient()
-      
+
       try {
-        const { data, error } = await supabase
-          .from("admin_users")
-          .select("*")
-          .eq("id", userId)
-          .single()
-        
-        if (error) throw error
-        
-        setUserData(data)
+        const response = await fetch(`/api/admin/users/${userId}`)
+
+        if (!response.ok) {
+          throw new Error("Erro ao carregar usuário")
+        }
+
+        const data = await response.json()
+
+        setUserData(data.user)
         setFormData({
-          email: data.email,
-          full_name: data.full_name,
-          role: data.role,
+          email: data.user.email,
+          full_name: data.user.full_name,
+          role: data.user.role,
         })
       } catch (error) {
-        console.error('Erro ao carregar usuário:', error)
+        console.error("Erro ao carregar usuário:", error)
         setError("Erro ao carregar dados do usuário")
       }
     }
-    
+
     loadUser()
   }, [userId])
 
@@ -91,39 +90,36 @@ export default function EditarUsuarioPage() {
       return
     }
 
-    const supabase = createClient()
-
     try {
-      console.log('Atualizando administrador...')
-      
-      // Verificar se o usuário está autenticado
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Usuário não autenticado")
-      
-      console.log('Usuário autenticado:', user.email)
+      console.log("Atualizando administrador...")
 
-      // Atualizar administrador
-      const { error } = await supabase.from("admin_users").update({
-        email: formData.email,
-        full_name: formData.full_name,
-        role: formData.role,
-      }).eq("id", userId)
-      
-      if (error) throw error
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          full_name: formData.full_name,
+          role: formData.role,
+        }),
+      })
 
-      console.log('Administrador atualizado com sucesso!')
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar usuário")
+      }
+
+      console.log("Administrador atualizado com sucesso!")
       router.push("/admin/usuarios")
       router.refresh()
     } catch (error: unknown) {
-      console.error('Erro ao atualizar administrador:', error)
-      
+      console.error("Erro ao atualizar administrador:", error)
+
       let errorMessage = "Ocorreu um erro inesperado"
-      
+
       if (error instanceof Error) {
         errorMessage = `Erro: ${error.message}`
-      } else if (typeof error === 'object' && error !== null) {
+      } else if (typeof error === "object" && error !== null) {
         const errorObj = error as any
         if (errorObj.message) {
           errorMessage = `Erro: ${errorObj.message}`
@@ -131,7 +127,7 @@ export default function EditarUsuarioPage() {
           errorMessage = `Erro: ${errorObj.error}`
         }
       }
-      
+
       setError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -146,33 +142,28 @@ export default function EditarUsuarioPage() {
     setIsDeleting(true)
     setError(null)
 
-    const supabase = createClient()
-
     try {
-      console.log('Excluindo administrador...')
-      
-      // Verificar se o usuário está autenticado
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Usuário não autenticado")
-      
-      // Excluir administrador
-      const { error } = await supabase.from("admin_users").delete().eq("id", userId)
-      
-      if (error) throw error
+      console.log("Excluindo administrador...")
 
-      console.log('Administrador excluído com sucesso!')
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir usuário")
+      }
+
+      console.log("Administrador excluído com sucesso!")
       router.push("/admin/usuarios")
       router.refresh()
     } catch (error: unknown) {
-      console.error('Erro ao excluir administrador:', error)
-      
+      console.error("Erro ao excluir administrador:", error)
+
       let errorMessage = "Ocorreu um erro inesperado"
-      
+
       if (error instanceof Error) {
         errorMessage = `Erro: ${error.message}`
-      } else if (typeof error === 'object' && error !== null) {
+      } else if (typeof error === "object" && error !== null) {
         const errorObj = error as any
         if (errorObj.message) {
           errorMessage = `Erro: ${errorObj.message}`
@@ -180,7 +171,7 @@ export default function EditarUsuarioPage() {
           errorMessage = `Erro: ${errorObj.error}`
         }
       }
-      
+
       setError(errorMessage)
     } finally {
       setIsDeleting(false)
@@ -209,12 +200,7 @@ export default function EditarUsuarioPage() {
           </Link>
         </Button>
         <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -227,12 +213,7 @@ export default function EditarUsuarioPage() {
               </>
             )}
           </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="bg-primary hover:bg-primary/90"
-          >
+          <Button type="button" onClick={handleSubmit} disabled={isLoading} className="bg-primary hover:bg-primary/90">
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -261,9 +242,7 @@ export default function EditarUsuarioPage() {
               <User className="h-5 w-5" />
               Editar Administrador
             </CardTitle>
-            <CardDescription>
-              Modifique as informações do administrador
-            </CardDescription>
+            <CardDescription>Modifique as informações do administrador</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
@@ -287,9 +266,7 @@ export default function EditarUsuarioPage() {
                 placeholder="exemplo@email.com"
                 required
               />
-              <p className="text-xs text-gray-500">
-                Este e-mail será usado para autenticação no sistema
-              </p>
+              <p className="text-xs text-gray-500">Este e-mail será usado para autenticação no sistema</p>
             </div>
 
             <div className="grid gap-2">
@@ -306,9 +283,7 @@ export default function EditarUsuarioPage() {
                   <SelectItem value="super_admin">Super Administrador</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500">
-                Super Administradores têm acesso total ao sistema
-              </p>
+              <p className="text-xs text-gray-500">Super Administradores têm acesso total ao sistema</p>
             </div>
 
             <div className="grid gap-2">

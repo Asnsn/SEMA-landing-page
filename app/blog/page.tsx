@@ -4,28 +4,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
-import { createClient } from "@/lib/supabase/server"
+import { query } from "@/lib/database/neon"
 
 export default async function BlogPage() {
-  const supabase = await createClient()
+  let blogPosts: any[] = []
 
-  const { data: posts, error } = await supabase
-    .from("news_posts")
-    .select(`
-      id,
-      title,
-      excerpt,
-      featured_image,
-      slug,
-      created_at,
-      published_at,
-      admin_users!inner(full_name)
+  try {
+    const result = await query(`
+      SELECT 
+        np.id,
+        np.title,
+        np.excerpt,
+        np.featured_image,
+        np.slug,
+        np.created_at,
+        np.published_at,
+        au.full_name
+      FROM news_posts np
+      LEFT JOIN admin_users au ON np.author_id = au.id
+      WHERE np.status = 'published'
+      ORDER BY np.published_at DESC
     `)
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
 
-  // Se houver erro, usar array vazio
-  const blogPosts = posts || []
+    blogPosts = result.rows || []
+  } catch (error) {
+    console.error("Erro ao buscar posts:", error)
+    blogPosts = []
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {
@@ -78,7 +83,7 @@ export default async function BlogPage() {
                       </div>
                       <CardTitle className="text-xl text-balance">{post.title}</CardTitle>
                       <div className="text-xs text-muted-foreground">
-                        {formatDate(post.published_at || post.created_at)} • Por {post.admin_users?.full_name}
+                        {formatDate(post.published_at || post.created_at)} • Por {post.full_name}
                       </div>
                     </CardHeader>
                     <CardContent>

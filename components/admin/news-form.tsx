@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createClient } from "@/lib/supabase/client"
-import { Save, Eye, ArrowLeft, Image as ImageIcon, Video } from "lucide-react"
+import { Save, Eye, ArrowLeft, ImageIcon } from "lucide-react"
 import Link from "next/link"
 import { MediaUpload } from "./media-upload"
 
@@ -19,7 +18,7 @@ interface MediaFile {
   id: string
   file: File
   preview: string
-  type: 'image' | 'video'
+  type: "image" | "video"
   name: string
   size: number
 }
@@ -79,7 +78,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
   const uploadMediaFiles = async (files: MediaFile[]) => {
     const uploadedFiles = []
-    
+
     for (const file of files) {
       try {
         // Simular upload - em produção, você faria upload real para um serviço
@@ -91,13 +90,13 @@ export function NewsForm({ initialData }: NewsFormProps) {
           file_size: file.size,
           mime_type: file.file.type,
           url: mockUrl,
-          thumbnail_url: file.type === 'image' ? mockUrl : null,
+          thumbnail_url: file.type === "image" ? mockUrl : null,
         })
       } catch (error) {
-        console.error('Erro ao fazer upload:', error)
+        console.error("Erro ao fazer upload:", error)
       }
     }
-    
+
     return uploadedFiles
   }
 
@@ -119,83 +118,60 @@ export function NewsForm({ initialData }: NewsFormProps) {
       return
     }
 
-    const supabase = createClient()
-
     try {
-      console.log('Iniciando publicação da notícia...')
-      
-      // Testar conexão com o banco
-      console.log('Testando conexão com o banco...')
-      const { data: testData, error: testError } = await supabase
-        .from('news_posts')
-        .select('id')
-        .limit(1)
-      
-      if (testError) {
-        console.error('Erro de conexão com o banco:', testError)
-        throw new Error(`Erro de conexão: ${testError.message}`)
-      }
-      
-      console.log('Conexão com banco OK')
-      
-      // Verificar se o usuário está autenticado
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Usuário não autenticado")
-      
-      console.log('Usuário autenticado:', user.email)
+      console.log("Iniciando publicação da notícia...")
 
       const finalStatus = status || formData.status
-      console.log('Status final:', finalStatus)
-      
+      console.log("Status final:", finalStatus)
+
       // Fazer upload dos arquivos de mídia (se houver)
       let uploadedMedia = []
       if (mediaFiles.length > 0) {
-        console.log('Fazendo upload de', mediaFiles.length, 'arquivos...')
+        console.log("Fazendo upload de", mediaFiles.length, "arquivos...")
         uploadedMedia = await uploadMediaFiles(mediaFiles)
-        console.log('Upload concluído:', uploadedMedia.length, 'arquivos')
+        console.log("Upload concluído:", uploadedMedia.length, "arquivos")
       }
-      
-          const dataToSave = {
-            title: formData.title,
-            content: formData.content,
-            excerpt: formData.excerpt,
-            featured_image: formData.featured_image,
-            slug: formData.slug,
-            status: finalStatus,
-            published_at: finalStatus === "published" ? new Date().toISOString() : null,
-            media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
-            featured_media_type: formData.featured_media_type,
-          }
-      
-      console.log('Dados para salvar:', dataToSave)
 
-      if (initialData) {
-        // Atualizar notícia existente
-        const { error } = await supabase.from("news_posts").update(dataToSave).eq("id", initialData.id)
+      const dataToSave = {
+        title: formData.title,
+        content: formData.content,
+        excerpt: formData.excerpt,
+        featured_image: formData.featured_image,
+        slug: formData.slug,
+        status: finalStatus,
+        published_at: finalStatus === "published" ? new Date().toISOString() : null,
+        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        featured_media_type: formData.featured_media_type,
+      }
 
-        if (error) throw error
-      } else {
-        // Criar nova notícia
-        const { error } = await supabase.from("news_posts").insert({
-          ...dataToSave,
-          author_id: user.id,
-        })
+      console.log("Dados para salvar:", dataToSave)
 
-        if (error) throw error
+      const url = initialData ? `/api/admin/news/${initialData.id}` : "/api/admin/news"
+
+      const method = initialData ? "PUT" : "POST"
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSave),
+      })
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar notícia")
       }
 
       router.push("/admin/noticias")
       router.refresh()
     } catch (error: unknown) {
-      console.error('Erro detalhado:', error)
-      
+      console.error("Erro detalhado:", error)
+
       let errorMessage = "Ocorreu um erro inesperado"
-      
+
       if (error instanceof Error) {
         errorMessage = `Erro: ${error.message}`
-      } else if (typeof error === 'object' && error !== null) {
+      } else if (typeof error === "object" && error !== null) {
         const errorObj = error as any
         if (errorObj.message) {
           errorMessage = `Erro: ${errorObj.message}`
@@ -203,7 +179,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
           errorMessage = `Erro: ${errorObj.error}`
         }
       }
-      
+
       setError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -270,7 +246,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 placeholder="url-da-noticia"
               />
               <p className="text-xs text-gray-500">
-                A URL será: {window.location.origin}/blog/{formData.slug}
+                A URL será: {typeof window !== "undefined" ? window.location.origin : ""}/blog/{formData.slug}
               </p>
             </div>
 
@@ -324,15 +300,13 @@ export function NewsForm({ initialData }: NewsFormProps) {
               <ImageIcon className="h-5 w-5 mr-2" />
               Mídia da Notícia
             </CardTitle>
-            <CardDescription>
-              Adicione imagens e vídeos para enriquecer o conteúdo da notícia
-            </CardDescription>
+            <CardDescription>Adicione imagens e vídeos para enriquecer o conteúdo da notícia</CardDescription>
           </CardHeader>
           <CardContent>
             <MediaUpload
               onFilesChange={handleMediaFilesChange}
               maxFiles={10}
-              acceptedTypes={['image/*', 'video/*']}
+              acceptedTypes={["image/*", "video/*"]}
               maxSize={50}
             />
           </CardContent>

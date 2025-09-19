@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, Calendar, User } from "lucide-react"
+import { query } from "@/lib/database/neon"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -13,27 +13,38 @@ interface BlogPostPageProps {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
-  const supabase = await createClient()
 
-  // Buscar a notícia pelo slug
-  const { data: post, error } = await supabase
-    .from("news_posts")
-    .select(`
-      id,
-      title,
-      content,
-      excerpt,
-      featured_image,
-      slug,
-      created_at,
-      published_at,
-      admin_users!inner(full_name, email)
-    `)
-    .eq("slug", slug)
-    .eq("status", "published")
-    .single()
+  let post: any = null
 
-  if (error || !post) {
+  try {
+    const result = await query(
+      `
+      SELECT 
+        np.id,
+        np.title,
+        np.content,
+        np.excerpt,
+        np.featured_image,
+        np.slug,
+        np.created_at,
+        np.published_at,
+        au.full_name,
+        au.email
+      FROM news_posts np
+      LEFT JOIN admin_users au ON np.author_id = au.id
+      WHERE np.slug = $1 AND np.status = 'published'
+    `,
+      [slug],
+    )
+
+    if (result.rows.length > 0) {
+      post = result.rows[0]
+    }
+  } catch (error) {
+    console.error("Erro ao buscar post:", error)
+  }
+
+  if (!post) {
     notFound()
   }
 
@@ -95,7 +106,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span>Por {post.admin_users?.full_name}</span>
+                  <span>Por {post.full_name}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />

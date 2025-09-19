@@ -1,8 +1,6 @@
 "use client"
 
 import type React from "react"
-
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -20,35 +18,40 @@ export default function Page() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/admin`,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       })
-      if (error) throw error
 
-      // Verificar se é admin após login
-      const { data: adminUser, error: adminError } = await supabase
-        .from("admin_users")
-        .select("*")
-        .eq("email", email)
-        .single()
+      const data = await response.json()
 
-      if (adminError || !adminUser) {
-        await supabase.auth.signOut()
-        throw new Error("Acesso negado. Apenas administradores podem fazer login.")
+      if (response.ok && data.user) {
+        // Login bem-sucedido
+        const userData = {
+          id: data.user.id,
+          email: data.user.email,
+          full_name: data.user.full_name,
+          role: data.user.role,
+          logged_in: true,
+        }
+
+        localStorage.setItem("admin_user", JSON.stringify(userData))
+        router.push("/admin")
+      } else {
+        setError(data.error || "E-mail ou senha incorretos")
       }
-
-      router.push("/admin")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ocorreu um erro")
+      setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
     }
@@ -98,11 +101,7 @@ export default function Page() {
                     <p className="text-sm text-red-600">{error}</p>
                   </div>
                 )}
-                <Button
-                  type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={isLoading}>
                   {isLoading ? "Entrando..." : "Entrar"}
                 </Button>
               </div>

@@ -1,33 +1,37 @@
-import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Plus, Edit, Eye } from "lucide-react"
 import { DeleteNewsButton } from "@/components/admin/delete-news-button"
+import { query } from "@/lib/database/neon"
 
 export default async function NoticiasPage() {
-  const supabase = await createClient()
+  let posts: any[] = []
 
-  // Buscar todas as notícias com informações do autor
-  const { data: posts, error } = await supabase
-    .from("news_posts")
-    .select(`
-      id,
-      title,
-      excerpt,
-      featured_image,
-      slug,
-      status,
-      created_at,
-      updated_at,
-      published_at,
-      admin_users!inner(full_name, email)
+  try {
+    const result = await query(`
+      SELECT 
+        np.id,
+        np.title,
+        np.excerpt,
+        np.featured_image,
+        np.slug,
+        np.status,
+        np.created_at,
+        np.updated_at,
+        np.published_at,
+        au.full_name,
+        au.email
+      FROM news_posts np
+      LEFT JOIN admin_users au ON np.author_id = au.id
+      ORDER BY np.created_at DESC
     `)
-    .order("created_at", { ascending: false })
 
-  if (error) {
+    posts = result.rows || []
+  } catch (error) {
     console.error("Erro ao buscar notícias:", error)
+    posts = []
   }
 
   const getStatusBadge = (status: string) => {
@@ -79,7 +83,7 @@ export default async function NoticiasPage() {
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>
-                      <strong>Autor:</strong> {post.admin_users?.full_name || post.admin_users?.email}
+                      <strong>Autor:</strong> {post.full_name || post.email}
                     </p>
                     <p>
                       <strong>Criada:</strong> {new Date(post.created_at).toLocaleDateString("pt-BR")}

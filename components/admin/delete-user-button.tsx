@@ -14,7 +14,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { createClient } from "@/lib/supabase/client"
 import { Trash2, Loader2 } from "lucide-react"
 
 interface DeleteUserButtonProps {
@@ -29,32 +28,27 @@ export function DeleteUserButton({ userId, userName }: DeleteUserButtonProps) {
   const handleDelete = async () => {
     setIsDeleting(true)
 
-    const supabase = createClient()
-
     try {
-      console.log('Excluindo usuário:', userId)
-      
-      // Verificar se o usuário está autenticado
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Usuário não autenticado")
-      
-      // Excluir usuário
-      const { error } = await supabase.from("admin_users").delete().eq("id", userId)
-      
-      if (error) throw error
+      console.log("Excluindo usuário:", userId)
 
-      console.log('Usuário excluído com sucesso!')
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir usuário")
+      }
+
+      console.log("Usuário excluído com sucesso!")
       router.refresh()
     } catch (error: unknown) {
-      console.error('Erro ao excluir usuário:', error)
-      
+      console.error("Erro ao excluir usuário:", error)
+
       let errorMessage = "Ocorreu um erro inesperado"
-      
+
       if (error instanceof Error) {
         errorMessage = `Erro: ${error.message}`
-      } else if (typeof error === 'object' && error !== null) {
+      } else if (typeof error === "object" && error !== null) {
         const errorObj = error as any
         if (errorObj.message) {
           errorMessage = `Erro: ${errorObj.message}`
@@ -62,7 +56,7 @@ export function DeleteUserButton({ userId, userName }: DeleteUserButtonProps) {
           errorMessage = `Erro: ${errorObj.error}`
         }
       }
-      
+
       alert(errorMessage)
     } finally {
       setIsDeleting(false)
@@ -72,17 +66,13 @@ export function DeleteUserButton({ userId, userName }: DeleteUserButtonProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button 
-          size="sm" 
-          variant="outline" 
+        <Button
+          size="sm"
+          variant="outline"
           className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
           disabled={isDeleting}
         >
-          {isDeleting ? (
-            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-          ) : (
-            <Trash2 className="h-4 w-4 mr-1" />
-          )}
+          {isDeleting ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Trash2 className="h-4 w-4 mr-1" />}
           Excluir
         </Button>
       </AlertDialogTrigger>
@@ -98,11 +88,7 @@ export function DeleteUserButton({ userId, userName }: DeleteUserButtonProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
-            className="bg-red-600 hover:bg-red-700"
-            disabled={isDeleting}
-          >
+          <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700" disabled={isDeleting}>
             {isDeleting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

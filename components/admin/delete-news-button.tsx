@@ -14,7 +14,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { createClient } from "@/lib/supabase/client"
 import { Trash2 } from "lucide-react"
 
 interface DeleteNewsButtonProps {
@@ -28,12 +27,15 @@ export function DeleteNewsButton({ postId, postTitle }: DeleteNewsButtonProps) {
 
   const handleDelete = async () => {
     setIsLoading(true)
-    const supabase = createClient()
 
     try {
-      const { error } = await supabase.from("news_posts").delete().eq("id", postId)
+      const response = await fetch(`/api/admin/news/${postId}`, {
+        method: "DELETE",
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        throw new Error("Erro ao deletar notícia")
+      }
 
       router.refresh()
     } catch (error) {

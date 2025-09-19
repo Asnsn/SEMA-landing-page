@@ -1,28 +1,34 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/server"
+import { query } from "@/lib/database/neon"
 
 export async function BlogSection() {
-  const supabase = await createClient()
+  let blogPosts: any[] = []
 
-  const { data: posts } = await supabase
-    .from("news_posts")
-    .select(`
-      id,
-      title,
-      excerpt,
-      featured_image,
-      slug,
-      created_at,
-      published_at,
-      admin_users!inner(full_name)
+  try {
+    const result = await query(`
+      SELECT 
+        np.id,
+        np.title,
+        np.excerpt,
+        np.featured_image,
+        np.slug,
+        np.created_at,
+        np.published_at,
+        au.full_name
+      FROM news_posts np
+      LEFT JOIN admin_users au ON np.author_id = au.id
+      WHERE np.status = 'published'
+      ORDER BY np.published_at DESC
+      LIMIT 3
     `)
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(3)
 
-  const blogPosts = posts || []
+    blogPosts = result.rows || []
+  } catch (error) {
+    console.error("Erro ao buscar posts:", error)
+    blogPosts = []
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pt-BR", {

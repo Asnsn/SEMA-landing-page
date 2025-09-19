@@ -1,8 +1,6 @@
 "use client"
 
 import type React from "react"
-
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -22,7 +20,6 @@ export default function Page() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
@@ -39,19 +36,25 @@ export default function Page() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/admin`,
-          data: {
-            full_name: fullName,
-          },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email,
+          password,
+          full_name: fullName,
+        }),
       })
-      if (error) throw error
 
-      router.push("/auth/sign-up-success")
+      const data = await response.json()
+
+      if (response.ok) {
+        router.push("/auth/sign-up-success")
+      } else {
+        setError(data.error || "Erro ao criar conta")
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Ocorreu um erro")
     } finally {
@@ -126,11 +129,7 @@ export default function Page() {
                     <p className="text-sm text-red-600">{error}</p>
                   </div>
                 )}
-                <Button
-                  type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={isLoading}>
                   {isLoading ? "Criando conta..." : "Criar Conta"}
                 </Button>
               </div>

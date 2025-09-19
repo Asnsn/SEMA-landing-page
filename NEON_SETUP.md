@@ -12,9 +12,9 @@ Se você já conectou o Neon via Netlify (como mostrado na imagem), as variávei
 Para desenvolvimento local, você pode configurar:
 
 ### 1. Variável do Banco de Dados (Opcional)
-```env
+\`\`\`env
 DATABASE_URL=postgresql://username:password@ep-xxxxx.us-east-1.aws.neon.tech/neondb?sslmode=require
-```
+\`\`\`
 
 ## Como Obter a Connection String (se necessário)
 
@@ -32,9 +32,9 @@ Se você conectou o Neon via Netlify, as variáveis já estão configuradas:
 
 ## Exemplo de Connection String
 
-```
+\`\`\`
 postgresql://neondb_owner:abc123@ep-cool-name-123456.us-east-1.aws.neon.tech/neondb?sslmode=require
-```
+\`\`\`
 
 ## ⚠️ IMPORTANTE
 
@@ -52,7 +52,7 @@ Após configurar, você pode testar a conexão acessando:
 
 Certifique-se de que a tabela `admin_users` existe com a estrutura:
 
-```sql
+\`\`\`sql
 CREATE TABLE admin_users (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     email text NOT NULL UNIQUE,
@@ -62,4 +62,4 @@ CREATE TABLE admin_users (
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
-```
+\`\`\`

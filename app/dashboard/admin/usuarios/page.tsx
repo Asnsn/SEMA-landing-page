@@ -1,14 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Search, UserPlus, Mail, Shield, Calendar } from "lucide-react"
+import { Search, UserPlus, Mail, Shield, Calendar } from "lucide-react"
 import Link from "next/link"
 
 interface User {
@@ -26,74 +25,68 @@ export default function UsuariosPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("all")
 
-  const supabase = createClient()
-
   useEffect(() => {
     fetchUsers()
   }, [])
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase.auth.admin.listUsers()
-      if (error) throw error
-      
-      const formattedUsers = data.users.map(user => ({
-        id: user.id,
-        email: user.email || '',
-        full_name: user.user_metadata?.full_name || null,
-        role: user.user_metadata?.role || 'user',
-        created_at: user.created_at,
-        last_sign_in_at: user.last_sign_in_at
-      }))
-      
-      setUsers(formattedUsers)
+      const response = await fetch("/api/admin/users")
+
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data.users || [])
+      } else {
+        console.error("Erro ao buscar usuários")
+      }
     } catch (error) {
-      console.error('Erro ao buscar usuários:', error)
+      console.error("Erro ao buscar usuários:", error)
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesRole = roleFilter === "all" || user.role === roleFilter
     return matchesSearch && matchesRole
   })
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'super_admin':
-        return 'bg-red-100 text-red-800'
-      case 'admin':
-        return 'bg-blue-100 text-blue-800'
-      case 'professor':
-        return 'bg-green-100 text-green-800'
+      case "super_admin":
+        return "bg-red-100 text-red-800"
+      case "admin":
+        return "bg-blue-100 text-blue-800"
+      case "professor":
+        return "bg-green-100 text-green-800"
       default:
-        return 'bg-gray-100 text-gray-800'
+        return "bg-gray-100 text-gray-800"
     }
   }
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case 'super_admin':
-        return 'Super Admin'
-      case 'admin':
-        return 'Administrador'
-      case 'professor':
-        return 'Professor'
+      case "super_admin":
+        return "Super Admin"
+      case "admin":
+        return "Administrador"
+      case "professor":
+        return "Professor"
       default:
-        return 'Usuário'
+        return "Usuário"
     }
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     })
   }
 
@@ -176,7 +169,9 @@ export default function UsuariosPage() {
               <Shield className="h-8 w-8 text-red-600" />
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-600">Super Admins</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role === 'super_admin').length}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {users.filter((u) => u.role === "super_admin").length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -187,7 +182,7 @@ export default function UsuariosPage() {
               <Shield className="h-8 w-8 text-blue-600" />
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-600">Administradores</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role === 'admin').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter((u) => u.role === "admin").length}</p>
               </div>
             </div>
           </CardContent>
@@ -198,7 +193,7 @@ export default function UsuariosPage() {
               <Shield className="h-8 w-8 text-green-600" />
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-600">Professores</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role === 'professor').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter((u) => u.role === "professor").length}</p>
               </div>
             </div>
           </CardContent>
@@ -209,9 +204,7 @@ export default function UsuariosPage() {
       <Card>
         <CardHeader>
           <CardTitle>Usuários ({filteredUsers.length})</CardTitle>
-          <CardDescription>
-            Lista de todos os usuários cadastrados no sistema
-          </CardDescription>
+          <CardDescription>Lista de todos os usuários cadastrados no sistema</CardDescription>
         </CardHeader>
         <CardContent>
           {filteredUsers.length === 0 ? (
@@ -219,10 +212,9 @@ export default function UsuariosPage() {
               <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum usuário encontrado</h3>
               <p className="text-gray-600 mb-4">
-                {searchTerm || roleFilter !== "all" 
-                  ? "Tente ajustar os filtros de busca." 
-                  : "Comece criando o primeiro usuário do sistema."
-                }
+                {searchTerm || roleFilter !== "all"
+                  ? "Tente ajustar os filtros de busca."
+                  : "Comece criando o primeiro usuário do sistema."}
               </p>
               {!searchTerm && roleFilter === "all" && (
                 <Link href="/dashboard/admin/usuarios/new">
@@ -244,9 +236,7 @@ export default function UsuariosPage() {
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900">
-                        {user.full_name || 'Nome não informado'}
-                      </h3>
+                      <h3 className="font-medium text-gray-900">{user.full_name || "Nome não informado"}</h3>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Mail className="h-3 w-3" />
                         <span>{user.email}</span>
@@ -254,18 +244,14 @@ export default function UsuariosPage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <Badge className={getRoleBadgeColor(user.role)}>
-                      {getRoleLabel(user.role)}
-                    </Badge>
+                    <Badge className={getRoleBadgeColor(user.role)}>{getRoleLabel(user.role)}</Badge>
                     <div className="text-right text-sm text-gray-600">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-3 w-3" />
                         <span>Criado em {formatDate(user.created_at)}</span>
                       </div>
                       {user.last_sign_in_at && (
-                        <div className="text-xs text-gray-500">
-                          Último acesso: {formatDate(user.last_sign_in_at)}
-                        </div>
+                        <div className="text-xs text-gray-500">Último acesso: {formatDate(user.last_sign_in_at)}</div>
                       )}
                     </div>
                   </div>

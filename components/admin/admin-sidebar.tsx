@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Home, FileText, Users, Settings, LogOut } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 const navigation = [
@@ -19,8 +18,7 @@ export function AdminSidebar() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    localStorage.removeItem("admin_user")
     router.push("/")
   }
 

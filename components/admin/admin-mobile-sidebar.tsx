@@ -6,7 +6,6 @@ import { X, Home, FileText, Users, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 const navigation = [
@@ -26,8 +25,7 @@ export function AdminMobileSidebar({ open, setOpen }: AdminMobileSidebarProps) {
   const router = useRouter()
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    localStorage.removeItem("admin_user")
     router.push("/")
   }
 
@@ -99,9 +97,7 @@ export function AdminMobileSidebar({ open, setOpen }: AdminMobileSidebarProps) {
                             >
                               <item.icon
                                 className={cn(
-                                  pathname === item.href
-                                    ? "text-primary"
-                                    : "text-gray-400 group-hover:text-primary",
+                                  pathname === item.href ? "text-primary" : "text-gray-400 group-hover:text-primary",
                                   "h-6 w-6 shrink-0",
                                 )}
                                 aria-hidden="true"

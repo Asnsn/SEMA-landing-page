@@ -5,15 +5,15 @@
 Para que o sistema de gerenciamento de administradores funcione corretamente, você precisa configurar as seguintes variáveis de ambiente:
 
 ### 1. Variáveis Básicas do Supabase
-```env
+\`\`\`env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-```
+\`\`\`
 
 ### 2. Chave de Serviço do Supabase (NOVA)
-```env
+\`\`\`env
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-```
+\`\`\`
 
 ## Como Obter a Service Role Key
 
