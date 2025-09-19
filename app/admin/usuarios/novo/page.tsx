@@ -86,11 +86,8 @@ export default function NovoUsuarioPage() {
       console.log('Criando registro na tabela admin_users...')
       console.log('Dados:', { email: formData.email, role: formData.role })
       
-      // Gerar um ID único temporário (o usuário será vinculado quando fizer login)
-      const tempId = crypto.randomUUID()
-      
+      // Inserir registro na tabela admin_users (ID será gerado automaticamente pelo banco)
       const { error: dbError } = await supabase.from("admin_users").insert({
-        id: tempId,
         email: formData.email,
         full_name: formData.full_name,
         role: formData.role,
