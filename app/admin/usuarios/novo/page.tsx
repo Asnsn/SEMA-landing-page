@@ -7,8 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createClient } from "@/lib/supabase/client"
-import { createAdminClient } from "@/lib/supabase/admin"
+// Removido: import { createClient } from "@/lib/supabase/client"
+// Removido: import { createAdminClient } from "@/lib/supabase/admin"
 import { Save, ArrowLeft, UserPlus, Loader2 } from "lucide-react"
 import Link from "next/link"
 
@@ -68,8 +68,6 @@ export default function NovoUsuarioPage() {
       return
     }
 
-    const supabase = createClient()
-    
     try {
       console.log('Criando novo administrador...')
       
@@ -82,26 +80,31 @@ export default function NovoUsuarioPage() {
       
       console.log('Usuário autenticado:', currentUser.email)
 
-      // Criar usuário apenas na tabela admin_users (sem Supabase Auth)
-      console.log('Criando usuário na tabela admin_users...')
-      console.log('Dados:', { email: formData.email, role: formData.role })
-      
-      // Hash da senha (simples - em produção use bcrypt)
-      const hashedPassword = btoa(formData.password) // Base64 encoding
-      
-      const { error: dbError } = await supabase.from("admin_users").insert({
-        email: formData.email,
-        full_name: formData.full_name,
-        role: formData.role,
-        password_hash: hashedPassword, // Adicionar campo de senha
+      // Fazer requisição para a API de criação de usuário
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          full_name: formData.full_name,
+          role: formData.role,
+          password: formData.password,
+        }),
       })
-      
-      console.log('Resposta do banco:', { dbError })
-      
-      if (dbError) {
-        console.error('Erro ao criar registro na tabela admin_users:', dbError)
-        throw new Error(`Erro ao salvar dados do administrador: ${dbError.message}`)
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao criar usuário')
       }
+
+      if (!data.success) {
+        throw new Error('Erro ao criar usuário')
+      }
+
+      console.log('Usuário criado com sucesso:', data.user)
 
       console.log('Administrador criado com sucesso!')
       

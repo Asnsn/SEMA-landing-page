@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { createClient } from "@/lib/supabase/client"
+// Removido: import { createClient } from "@/lib/supabase/client"
 import { Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
@@ -37,35 +37,33 @@ export default function CustomLoginPage() {
       return
     }
 
-    const supabase = createClient()
-
     try {
       console.log('Tentando fazer login...')
+      console.log('Email:', formData.email)
       
-      // Hash da senha para comparar
-      const hashedPassword = btoa(formData.password)
-      
-      // Buscar usuário na tabela admin_users
-      const { data: user, error: dbError } = await supabase
-        .from("admin_users")
-        .select("*")
-        .eq("email", formData.email)
-        .eq("password_hash", hashedPassword)
-        .single()
+      // Fazer requisição para a API de login
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
 
-      console.log('Resposta do banco:', { user, dbError })
+      const data = await response.json()
 
-      if (dbError) {
-        if (dbError.code === 'PGRST116') {
-          throw new Error("E-mail ou senha incorretos")
-        }
-        throw new Error(`Erro no banco de dados: ${dbError.message}`)
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro no login')
       }
 
-      if (!user) {
-        throw new Error("E-mail ou senha incorretos")
+      if (!data.success) {
+        throw new Error('Erro no login')
       }
 
+      const user = data.user
       console.log('Login bem-sucedido:', user.email)
 
       // Simular login criando uma sessão simples
