@@ -49,7 +49,7 @@ export function BannerSection() {
               <span className="text-primary drop-shadow-lg">Semeando amor</span>, transformando vidas
             </h1>
             <p className="mx-auto max-w-[700px] text-white/95 md:text-xl text-pretty drop-shadow-lg font-medium">
-              A SEMA oferece oportunidades esportivas e culturais para crianças e jovens de Hortolândia.
+              A SEMA oferece oportunidades esportivas e culturais para crianças e jovens.
             </p>
           </div>
 

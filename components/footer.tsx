@@ -87,11 +87,11 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Contato</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>Rua das Flores, 123</p>
+              <p>Rua Lidia Lopes Moreira, 278</p>
               <p>Hortolândia - SP</p>
-              <p>CEP: 13184-000</p>
-              <p>Tel: (19) 3865-1234</p>
-              <p>contato@sema.org.br</p>
+              <p>CEP: 13184-696</p>
+              <p>Jd. Carmen Cristina</p>
+              <p>institutosemahortolandia@gmail.com</p>
             </div>
           </div>
         </div>

@@ -68,7 +68,7 @@ export default function ContatoPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">contato@sema.org.br</p>
+                    <p className="text-muted-foreground">institutosemahortolandia@gmail.com</p>
                   </CardContent>
                 </Card>
 

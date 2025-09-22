@@ -26,9 +26,9 @@ export default function ConfiguracoesPage() {
   const [settings, setSettings] = useState({
     site_name: "SEMA - Sociedade Esportiva e Musical de Apoio",
     site_description: "Transformando vidas através do esporte e da cultura em Hortolândia há mais de 15 anos.",
-    contact_email: "contato@sema.org.br",
+    contact_email: "institutosemahortolandia@gmail.com",
     contact_phone: "(19) 99999-9999",
-    address: "Hortolândia, SP",
+    address: "Rua Lidia Lopes Moreira, 278 - Jd. Carmen Cristina, Hortolândia - SP",
     email_notifications: true,
     admin_notifications: true,
     require_email_verification: true,

@@ -198,7 +198,7 @@ export default function BalletPage() {
                     <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </div>
-                    <p className="text-sm">Venha conhecer nossa sede na Rua das Flores, 123 - Hortolândia</p>
+                    <p className="text-sm">Venha conhecer nossa sede na Rua Lidia Lopes Moreira, 278 - Jd. Carmen Cristina, Hortolândia</p>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">

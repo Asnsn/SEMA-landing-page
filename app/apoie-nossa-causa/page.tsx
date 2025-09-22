@@ -169,7 +169,7 @@ export default function ApoieNossaCausaPage() {
                   <div>
                     <h4 className="font-semibold mb-2">PIX</h4>
                     <div className="space-y-1 text-sm text-muted-foreground">
-                      <p>Chave PIX: contato@sema.org.br</p>
+                      <p>Chave PIX: institutosemahortolandia@gmail.com</p>
                       <p>Favorecido: SEMA - Associação</p>
                     </div>
                   </div>
