@@ -209,7 +209,15 @@ export async function testConnection(): Promise<boolean> {
 
 // Função para buscar posts de notícias
 export async function getNewsPosts(status?: string): Promise<NewsPost[]> {
+  if (!isSupabaseConfigured()) {
+    console.warn("Supabase não configurado, retornando array vazio")
+    return []
+  }
+
   try {
+    console.log("=== INÍCIO DA FUNÇÃO getNewsPosts ===")
+    console.log("Status filtro:", status)
+
     let query = supabaseAdmin
       .from('news_posts')
       .select('*')
@@ -223,12 +231,25 @@ export async function getNewsPosts(status?: string): Promise<NewsPost[]> {
 
     if (error) {
       console.error("Erro ao buscar posts:", error)
+      console.error("Detalhes do erro:", JSON.stringify(error, null, 2))
       return []
     }
+
+    console.log("Posts encontrados:", data?.length || 0)
+    if (data && data.length > 0) {
+      console.log("Primeiro post:", {
+        id: data[0].id,
+        title: data[0].title,
+        featured_image: data[0].featured_image,
+        has_featured_image: !!(data[0].featured_image && data[0].featured_image.trim() !== '')
+      })
+    }
+    console.log("=== FIM DA FUNÇÃO getNewsPosts ===")
 
     return data as NewsPost[]
   } catch (error) {
     console.error("Erro ao buscar posts:", error)
+    console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
     return []
   }
 }

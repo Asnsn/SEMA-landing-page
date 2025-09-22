@@ -10,8 +10,19 @@ export default async function BlogPage() {
   let blogPosts: any[] = []
 
   try {
+    console.log("=== INÍCIO DA PÁGINA BLOG ===")
     const posts = await getNewsPosts('published')
     blogPosts = posts || []
+    console.log("Posts recebidos na página:", blogPosts.length)
+    if (blogPosts.length > 0) {
+      console.log("Primeiro post na página:", {
+        id: blogPosts[0].id,
+        title: blogPosts[0].title,
+        featured_image: blogPosts[0].featured_image,
+        has_featured_image: !!(blogPosts[0].featured_image && blogPosts[0].featured_image.trim() !== '')
+      })
+    }
+    console.log("=== FIM DA PÁGINA BLOG ===")
   } catch (error) {
     console.error("Erro ao buscar posts:", error)
     blogPosts = []
