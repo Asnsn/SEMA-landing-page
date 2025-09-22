@@ -76,7 +76,7 @@ export function BannerSection() {
               <div className="text-sm text-white/80">Anos de História</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-3xl font-bold text-white drop-shadow-lg">8</div>
+              <div className="text-3xl font-bold text-white drop-shadow-lg">12</div>
               <div className="text-sm text-white/80">Modalidades</div>
             </div>
           </div>
