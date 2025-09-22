@@ -11,7 +11,7 @@ export function HeroSection() {
               Transformando Vidas Através do
               <span className="text-primary drop-shadow-lg"> Esporte</span>
             </h1>
-            <p className="mx-auto max-w-[700px] text-white/90 md:text-xl text-pretty drop-shadow-lg">
+            <p className="mx-auto max-w-[700px] text-white/95 md:text-xl text-pretty drop-shadow-lg font-medium">
               A SEMA oferece oportunidades esportivas e culturais para crianças e jovens de Hortolândia, promovendo
               inclusão social através do ballet, futebol e outras atividades.
             </p>
@@ -52,13 +52,20 @@ export function HeroSection() {
         <div className="relative w-full h-full">
           {/* Imagem de fundo */}
           <img
-            src="/banner sema.jpg"
+            src="/banner%20sema.jpg"
             alt="Banner SEMA - Transformando vidas através do esporte"
             className="w-full h-full object-cover scale-105 transition-transform duration-700 ease-out"
+            onError={(e) => {
+              console.log("Erro ao carregar imagem do banner")
+              e.currentTarget.style.display = 'none'
+            }}
           />
           
+          {/* Fallback caso a imagem não carregue */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/40"></div>
+          
           {/* Overlay com gradiente e blur */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/20 to-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50"></div>
           <div className="absolute inset-0 backdrop-blur-[1px]"></div>
           
           {/* Efeito de brilho sutil */}

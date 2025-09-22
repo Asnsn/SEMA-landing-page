@@ -1,5 +1,5 @@
 import { Header } from "@/components/header"
-import { HeroSection } from "@/components/hero-section"
+import { BannerSection } from "@/components/banner-section"
 import { ActivitiesSection } from "@/components/activities-section"
 import { BlogSection } from "@/components/blog-section"
 import { Footer } from "@/components/footer"
@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="min-h-screen">
       <Header />
       <main>
-        <HeroSection />
+        <BannerSection />
         <ActivitiesSection />
         <BlogSection />
       </main>
