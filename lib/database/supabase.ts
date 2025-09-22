@@ -49,6 +49,8 @@ export interface NewsPost {
   created_at: string
   updated_at: string
   published_at?: string
+  media_files?: any[]
+  featured_media_type?: string
 }
 
 // Interface para configurações do site
@@ -240,11 +242,23 @@ export async function createNewsPost(postData: {
   slug: string
   status: "draft" | "published" | "archived"
   author_id: string
+  media_files?: any[]
+  featured_media_type?: string
+  published_at?: string
 }): Promise<NewsPost | null> {
+  if (!isSupabaseConfigured()) {
+    console.warn("Supabase não configurado, retornando null")
+    return null
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('news_posts')
-      .insert([postData])
+      .insert([{
+        ...postData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }])
       .select()
       .single()
 
