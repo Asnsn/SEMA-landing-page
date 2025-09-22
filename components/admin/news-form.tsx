@@ -81,19 +81,19 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
     for (const file of files) {
       try {
-        // Simular upload - em produção, você faria upload real para um serviço
-        const mockUrl = URL.createObjectURL(file.file)
+        // Usar a URL real do arquivo já enviado
         uploadedFiles.push({
           filename: file.name,
           original_name: file.name,
           file_type: file.type,
           file_size: file.size,
           mime_type: file.file.type,
-          url: mockUrl,
-          thumbnail_url: file.type === "image" ? mockUrl : null,
+          url: file.url || file.preview,
+          thumbnail_url: file.type === "image" ? (file.url || file.preview) : null,
+          path: file.path,
         })
       } catch (error) {
-        console.error("Erro ao fazer upload:", error)
+        console.error("Erro ao processar arquivo:", error)
       }
     }
 

@@ -21,6 +21,8 @@ interface MediaFile {
   type: 'image' | 'video'
   name: string
   size: number
+  url?: string
+  path?: string
 }
 
 interface MediaUploadProps {
@@ -40,11 +42,51 @@ export function MediaUpload({
   const [dragActive, setDragActive] = useState(false)
   const [uploading, setUploading] = useState(false)
 
-  const handleFiles = useCallback((newFiles: FileList | File[]) => {
+  const uploadFile = async (file: File): Promise<MediaFile | null> => {
+    try {
+      setUploading(true)
+      
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Erro no upload')
+      }
+
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Erro no upload')
+      }
+
+      return {
+        id: Math.random().toString(36).substr(2, 9),
+        file,
+        preview: result.url,
+        type: file.type.startsWith('image/') ? 'image' : 'video',
+        name: file.name,
+        size: file.size,
+        url: result.url,
+        path: result.path
+      }
+    } catch (error) {
+      console.error('Erro no upload:', error)
+      return null
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleFiles = useCallback(async (newFiles: FileList | File[]) => {
     const fileArray = Array.from(newFiles)
     const validFiles: MediaFile[] = []
 
-    fileArray.forEach((file) => {
+    for (const file of fileArray) {
       // Verificar tipo de arquivo
       const isValidType = acceptedTypes.some(type => {
         if (type.endsWith('/*')) {
@@ -57,17 +99,12 @@ export function MediaUpload({
       const isValidSize = file.size <= maxSize * 1024 * 1024
 
       if (isValidType && isValidSize && files.length + validFiles.length < maxFiles) {
-        const mediaFile: MediaFile = {
-          id: Math.random().toString(36).substr(2, 9),
-          file,
-          preview: URL.createObjectURL(file),
-          type: file.type.startsWith('image/') ? 'image' : 'video',
-          name: file.name,
-          size: file.size
+        const uploadedFile = await uploadFile(file)
+        if (uploadedFile) {
+          validFiles.push(uploadedFile)
         }
-        validFiles.push(mediaFile)
       }
-    })
+    }
 
     if (validFiles.length > 0) {
       const updatedFiles = [...files, ...validFiles]
@@ -145,10 +182,10 @@ export function MediaUpload({
         />
         
         <div className="space-y-2">
-          <Upload className="h-8 w-8 mx-auto text-gray-400" />
+          <Upload className={`h-8 w-8 mx-auto ${uploading ? 'text-primary animate-pulse' : 'text-gray-400'}`} />
           <div>
             <p className="text-sm font-medium text-gray-900">
-              Arraste arquivos aqui ou clique para selecionar
+              {uploading ? 'Fazendo upload...' : 'Arraste arquivos aqui ou clique para selecionar'}
             </p>
             <p className="text-xs text-gray-500">
               Imagens e vídeos até {maxSize}MB cada
