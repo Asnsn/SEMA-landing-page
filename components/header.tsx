@@ -31,10 +31,10 @@ export function Header() {
         <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
           <img 
             src="/sema-logo ofc.jpg" 
-            alt="SEMA Logo" 
+            alt="INSTITUTO SEMA Logo" 
             className="h-8 w-8 rounded-full object-cover"
           />
-          <span className="text-xl font-bold text-primary">SEMA</span>
+          <span className="text-xl font-bold text-primary">INSTITUTO SEMA</span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
@@ -90,7 +90,7 @@ export function Header() {
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
                     S
                   </div>
-                  <span className="text-xl font-bold text-primary">SEMA</span>
+                  <span className="text-xl font-bold text-primary">INSTITUTO SEMA</span>
                 </Link>
 
                 <nav className="flex flex-col space-y-4">

@@ -123,7 +123,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Rodapé do Post */}
             <footer className="mt-12 pt-8 border-t border-gray-200">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">Publicado pela SEMA - Instituição Social de Hortolândia</div>
+                <div className="text-sm text-gray-500">Publicado pelo INSTITUTO SEMA - Instituição Social de Hortolândia</div>
                 <Button asChild variant="outline" size="sm">
                   <Link href="/blog">Ver Mais Notícias</Link>
                 </Button>

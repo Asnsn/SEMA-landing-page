@@ -42,7 +42,7 @@ export default async function BlogPage() {
 
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-balance">
-                Notícias da SEMA
+                Notícias do INSTITUTO SEMA
               </h1>
               <p className="mx-auto mt-4 max-w-[700px] text-muted-foreground md:text-lg text-pretty">
                 Acompanhe todas as conquistas, eventos e novidades da nossa instituição. Histórias de transformação e
@@ -63,7 +63,7 @@ export default async function BlogPage() {
                     </div>
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">SEMA</span>
+                        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">INSTITUTO SEMA</span>
                         <span className="text-xs text-muted-foreground">{getReadTime(post.excerpt || "")}</span>
                       </div>
                       <CardTitle className="text-xl text-balance">{post.title}</CardTitle>
@@ -97,7 +97,7 @@ export default async function BlogPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma notícia publicada</h3>
-                <p className="text-gray-500">As notícias da SEMA aparecerão aqui quando forem publicadas.</p>
+                <p className="text-gray-500">As notícias do INSTITUTO SEMA aparecerão aqui quando forem publicadas.</p>
               </div>
             )}
           </div>

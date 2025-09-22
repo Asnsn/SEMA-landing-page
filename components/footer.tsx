@@ -12,7 +12,7 @@ export function Footer() {
                 alt="SEMA Logo" 
                 className="h-8 w-8 rounded-full object-cover"
               />
-              <span className="text-xl font-bold text-primary">SEMA</span>
+              <span className="text-xl font-bold text-primary">INSTITUTO SEMA</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Transformando vidas através do esporte e da cultura em Hortolândia há mais de 15 anos.
@@ -97,7 +97,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 SEMA - Todos os direitos reservados. Desenvolvido com ❤️ para transformar vidas.</p>
+          <p>&copy; 2024 INSTITUTO SEMA - Todos os direitos reservados. Desenvolvido com ❤️ para transformar vidas.</p>
         </div>
       </div>
     </footer>
