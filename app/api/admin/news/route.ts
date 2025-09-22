@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createNewsPost } from "@/lib/database/supabase"
+import { createNewsPost, getNewsPosts } from "@/lib/database/supabase"
 import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
@@ -59,6 +59,34 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("=== ERRO NA API DE CRIAÇÃO DE NOTÍCIA ===")
     console.error("Erro ao criar notícia:", error)
+    console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
+    console.error("=== FIM DO ERRO ===")
+    
+    return NextResponse.json({ 
+      error: "Erro interno do servidor", 
+      details: error instanceof Error ? error.message : "Erro desconhecido" 
+    }, { status: 500 })
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    console.log("=== INÍCIO DA API DE BUSCA DE NOTÍCIAS ===")
+    
+    const { searchParams } = new URL(request.url)
+    const status = searchParams.get('status')
+    
+    console.log("Parâmetros de busca:", { status })
+
+    const posts = await getNewsPosts(status || undefined)
+    
+    console.log("Notícias encontradas:", posts.length)
+    console.log("=== FIM DA API DE BUSCA DE NOTÍCIAS ===")
+    
+    return NextResponse.json({ posts })
+  } catch (error) {
+    console.error("=== ERRO NA API DE BUSCA DE NOTÍCIAS ===")
+    console.error("Erro ao buscar notícias:", error)
     console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
     console.error("=== FIM DO ERRO ===")
     
