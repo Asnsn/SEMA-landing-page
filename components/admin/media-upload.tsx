@@ -27,6 +27,7 @@ interface MediaFile {
 
 interface MediaUploadProps {
   onFilesChange: (files: MediaFile[]) => void
+  onFeaturedImageChange?: (url: string) => void
   maxFiles?: number
   acceptedTypes?: string[]
   maxSize?: number // em MB
@@ -34,6 +35,7 @@ interface MediaUploadProps {
 
 export function MediaUpload({ 
   onFilesChange, 
+  onFeaturedImageChange,
   maxFiles = 10, 
   acceptedTypes = ['image/*', 'video/*'],
   maxSize = 50 
@@ -110,6 +112,12 @@ export function MediaUpload({
       const updatedFiles = [...files, ...validFiles]
       setFiles(updatedFiles)
       onFilesChange(updatedFiles)
+      
+      // Se a primeira imagem for uma imagem, usar como imagem destacada
+      const firstImage = validFiles.find(file => file.type === 'image')
+      if (firstImage && onFeaturedImageChange) {
+        onFeaturedImageChange(firstImage.url || firstImage.preview)
+      }
     }
   }, [files, acceptedTypes, maxSize, maxFiles, onFilesChange])
 

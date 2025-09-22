@@ -76,13 +76,18 @@ export function NewsForm({ initialData }: NewsFormProps) {
     setMediaFiles(files)
   }
 
+  const handleFeaturedImageChange = (url: string) => {
+    setFormData(prev => ({ ...prev, featured_image: url }))
+  }
+
   const uploadMediaFiles = async (files: MediaFile[]) => {
     const uploadedFiles = []
+    let featuredImageUrl = formData.featured_image // Manter a imagem destacada atual se houver
 
     for (const file of files) {
       try {
         // Usar a URL real do arquivo já enviado
-        uploadedFiles.push({
+        const fileData = {
           filename: file.name,
           original_name: file.name,
           file_type: file.type,
@@ -91,10 +96,22 @@ export function NewsForm({ initialData }: NewsFormProps) {
           url: file.url || file.preview,
           thumbnail_url: file.type === "image" ? (file.url || file.preview) : null,
           path: file.path,
-        })
+        }
+        
+        uploadedFiles.push(fileData)
+        
+        // Se for uma imagem e não tiver imagem destacada, usar como imagem destacada
+        if (file.type === "image" && !featuredImageUrl) {
+          featuredImageUrl = file.url || file.preview
+        }
       } catch (error) {
         console.error("Erro ao processar arquivo:", error)
       }
+    }
+
+    // Atualizar o estado da imagem destacada se necessário
+    if (featuredImageUrl && featuredImageUrl !== formData.featured_image) {
+      setFormData(prev => ({ ...prev, featured_image: featuredImageUrl }))
     }
 
     return uploadedFiles
@@ -305,6 +322,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
           <CardContent>
             <MediaUpload
               onFilesChange={handleMediaFilesChange}
+              onFeaturedImageChange={handleFeaturedImageChange}
               maxFiles={10}
               acceptedTypes={["image/*", "video/*"]}
               maxSize={50}
