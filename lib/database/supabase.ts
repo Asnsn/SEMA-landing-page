@@ -210,14 +210,10 @@ export async function testConnection(): Promise<boolean> {
 // Função para buscar posts de notícias
 export async function getNewsPosts(status?: string): Promise<NewsPost[]> {
   if (!isSupabaseConfigured()) {
-    console.warn("Supabase não configurado, retornando array vazio")
     return []
   }
 
   try {
-    console.log("=== INÍCIO DA FUNÇÃO getNewsPosts ===")
-    console.log("Status filtro:", status)
-
     let query = supabaseAdmin
       .from('news_posts')
       .select('*')
@@ -231,25 +227,12 @@ export async function getNewsPosts(status?: string): Promise<NewsPost[]> {
 
     if (error) {
       console.error("Erro ao buscar posts:", error)
-      console.error("Detalhes do erro:", JSON.stringify(error, null, 2))
       return []
     }
-
-    console.log("Posts encontrados:", data?.length || 0)
-    if (data && data.length > 0) {
-      console.log("Primeiro post:", {
-        id: data[0].id,
-        title: data[0].title,
-        featured_image: data[0].featured_image,
-        has_featured_image: !!(data[0].featured_image && data[0].featured_image.trim() !== '')
-      })
-    }
-    console.log("=== FIM DA FUNÇÃO getNewsPosts ===")
 
     return data as NewsPost[]
   } catch (error) {
     console.error("Erro ao buscar posts:", error)
-    console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
     return []
   }
 }
@@ -267,11 +250,7 @@ export async function createNewsPost(postData: {
   featured_media_type?: string
   published_at?: string
 }): Promise<NewsPost | null> {
-  console.log("=== INÍCIO DA FUNÇÃO createNewsPost ===")
-  console.log("Dados recebidos:", JSON.stringify(postData, null, 2))
-
   if (!isSupabaseConfigured()) {
-    console.warn("Supabase não configurado, retornando null")
     return null
   }
 
@@ -282,8 +261,6 @@ export async function createNewsPost(postData: {
       updated_at: new Date().toISOString()
     }
 
-    console.log("Dados para inserir:", JSON.stringify(insertData, null, 2))
-
     const { data, error } = await supabaseAdmin
       .from('news_posts')
       .insert([insertData])
@@ -292,16 +269,12 @@ export async function createNewsPost(postData: {
 
     if (error) {
       console.error("Erro ao criar post:", error)
-      console.error("Detalhes do erro:", JSON.stringify(error, null, 2))
       return null
     }
 
-    console.log("Post criado com sucesso:", data)
-    console.log("=== FIM DA FUNÇÃO createNewsPost ===")
     return data as NewsPost
   } catch (error) {
     console.error("Erro ao criar post:", error)
-    console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
     return null
   }
 }
