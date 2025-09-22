@@ -1,22 +1,11 @@
-import Image from "next/image"
-
 export function BannerSection() {
   return (
-    <section className="relative min-h-[700px] flex items-center justify-center overflow-hidden">
-      {/* Imagem de fundo */}
-      <div className="absolute inset-0">
-        <Image
-          src="/banner%20sema.jpg"
-          alt="Banner SEMA - Transformando vidas através do esporte"
-          fill
-          className="object-cover"
-          priority
-          onError={(e) => {
-            console.log("Erro ao carregar imagem do banner")
-          }}
-        />
-      </div>
-      
+    <section 
+      className="relative min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: "url('/banner%20sema.jpg')"
+      }}
+    >
       {/* Overlay escuro para contraste */}
       <div className="absolute inset-0 bg-black/50"></div>
       
