@@ -246,30 +246,41 @@ export async function createNewsPost(postData: {
   featured_media_type?: string
   published_at?: string
 }): Promise<NewsPost | null> {
+  console.log("=== INÍCIO DA FUNÇÃO createNewsPost ===")
+  console.log("Dados recebidos:", JSON.stringify(postData, null, 2))
+
   if (!isSupabaseConfigured()) {
     console.warn("Supabase não configurado, retornando null")
     return null
   }
 
   try {
+    const insertData = {
+      ...postData,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+
+    console.log("Dados para inserir:", JSON.stringify(insertData, null, 2))
+
     const { data, error } = await supabaseAdmin
       .from('news_posts')
-      .insert([{
-        ...postData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }])
+      .insert([insertData])
       .select()
       .single()
 
     if (error) {
       console.error("Erro ao criar post:", error)
+      console.error("Detalhes do erro:", JSON.stringify(error, null, 2))
       return null
     }
 
+    console.log("Post criado com sucesso:", data)
+    console.log("=== FIM DA FUNÇÃO createNewsPost ===")
     return data as NewsPost
   } catch (error) {
     console.error("Erro ao criar post:", error)
+    console.error("Stack trace:", error instanceof Error ? error.stack : "N/A")
     return null
   }
 }
