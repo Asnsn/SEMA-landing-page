@@ -14,11 +14,10 @@ export function BannerSection() {
         <div className="flex flex-col items-center space-y-6 text-center">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-balance text-white drop-shadow-2xl">
-              Instituto sema semeando amor, transformando vidas
+              <span className="text-primary drop-shadow-lg">Semeando amor</span>, transformando vidas
             </h1>
             <p className="mx-auto max-w-[700px] text-white/95 md:text-xl text-pretty drop-shadow-lg font-medium">
-              A SEMA oferece oportunidades esportivas e culturais para crianças e jovens de Hortolândia, promovendo
-              inclusão social através do ballet, futebol e outras atividades.
+              A SEMA oferece oportunidades esportivas e culturais para crianças e jovens de Hortolândia.
             </p>
           </div>
 
