@@ -1,17 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Configuração do Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key'
 
-// Verificar se as variáveis estão configuradas
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Variáveis de ambiente do Supabase não configuradas. Verifique NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY")
-}
+// Verificar se as variáveis estão configuradas (apenas em runtime, não durante build)
+const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_SUPABASE_URL
 
-if (!supabaseServiceKey) {
-  throw new Error("Variável SUPABASE_SERVICE_ROLE_KEY não configurada")
+if (isBuildTime) {
+  console.warn("Build time: Supabase environment variables not configured")
 }
 
 // Cliente público (para operações do lado do cliente)
@@ -19,6 +17,13 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Cliente com service role (para operações administrativas)
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+
+// Função para verificar se as configurações são válidas
+export function isSupabaseConfigured(): boolean {
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && 
+           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && 
+           process.env.SUPABASE_SERVICE_ROLE_KEY)
+}
 
 // Interface para usuário admin
 export interface AdminUser {
@@ -60,6 +65,11 @@ export interface SiteSetting {
 
 // Função para buscar usuário por email
 export async function getUserByEmail(email: string): Promise<AdminUser | null> {
+  if (!isSupabaseConfigured()) {
+    console.warn("Supabase não configurado, retornando null")
+    return null
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('admin_users')
@@ -177,6 +187,11 @@ export async function deleteUser(id: string): Promise<boolean> {
 
 // Função para testar conexão
 export async function testConnection(): Promise<boolean> {
+  if (!isSupabaseConfigured()) {
+    console.warn("Supabase não configurado, retornando false")
+    return false
+  }
+
   try {
     const { data, error } = await supabaseAdmin
       .from('admin_users')
