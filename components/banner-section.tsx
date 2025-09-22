@@ -19,7 +19,7 @@ export function BannerSection() {
       setCurrentBannerIndex((prevIndex) => 
         prevIndex === banners.length - 1 ? 0 : prevIndex + 1
       )
-    }, 15000) // 15 segundos
+    }, 4000) // 4 segundos
 
     return () => clearInterval(interval)
   }, [banners.length, isPaused])
