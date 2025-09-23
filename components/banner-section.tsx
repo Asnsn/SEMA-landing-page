@@ -33,60 +33,63 @@ export function BannerSection() {
 
   return (
     <section 
-      className="relative min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
+      className="relative min-h-[500px] sm:min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden transition-all duration-1000 ease-in-out"
       style={{
-        backgroundImage: `url('${banners[currentBannerIndex]}')`
+        backgroundImage: `url('${banners[currentBannerIndex]}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }}
     >
       {/* Overlay escuro para contraste */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      <div className="absolute inset-0 bg-black/40 sm:bg-black/50"></div>
       
       {/* Conteúdo */}
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
-        <div className="flex flex-col items-center space-y-6 text-center">
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-balance text-white drop-shadow-2xl">
+        <div className="flex flex-col items-center space-y-4 sm:space-y-6 text-center">
+          <div className="space-y-3 sm:space-y-4">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-balance text-white drop-shadow-2xl leading-tight">
               <span className="text-primary drop-shadow-lg">Semeando amor</span>, transformando vidas
             </h1>
-            <p className="mx-auto max-w-[700px] text-white/95 md:text-xl text-pretty drop-shadow-lg font-medium">
+            <p className="mx-auto max-w-[600px] sm:max-w-[700px] text-white/95 text-base sm:text-lg md:text-xl text-pretty drop-shadow-lg font-medium px-4">
               A SEMA oferece oportunidades esportivas e culturais para crianças e jovens.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a href="/atividades">
-              <button className="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-xl transition-colors">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-md sm:max-w-none">
+            <a href="/atividades" className="flex-1">
+              <button className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-xl transition-colors text-sm sm:text-base">
                 Conheça Nossas Atividades
               </button>
             </a>
-            <a href="/como-ajudar">
-              <button className="px-8 py-3 bg-white/10 border border-white/30 text-white hover:bg-white/20 rounded-lg shadow-xl transition-colors backdrop-blur-sm">
+            <a href="/como-ajudar" className="flex-1">
+              <button className="w-full px-6 py-3 bg-white/10 border border-white/30 text-white hover:bg-white/20 rounded-lg shadow-xl transition-colors backdrop-blur-sm text-sm sm:text-base">
                 Como Ajudar
               </button>
             </a>
           </div>
 
-          <div className="grid grid-cols-3 gap-8 mt-12 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-3xl font-bold text-white drop-shadow-lg">500+</div>
-              <div className="text-sm text-white/80">Crianças Atendidas</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-12 text-center max-w-4xl w-full">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20">
+              <div className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">500+</div>
+              <div className="text-xs sm:text-sm text-white/80">Crianças Atendidas</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-3xl font-bold text-white drop-shadow-lg">15</div>
-              <div className="text-sm text-white/80">Anos de História</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20">
+              <div className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">15</div>
+              <div className="text-xs sm:text-sm text-white/80">Anos de História</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <div className="text-3xl font-bold text-white drop-shadow-lg">12</div>
-              <div className="text-sm text-white/80">Modalidades</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20">
+              <div className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">12</div>
+              <div className="text-xs sm:text-sm text-white/80">Modalidades</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Botões de navegação */}
+      {/* Botões de navegação - apenas em desktop */}
       <button
         onClick={() => handleBannerChange(currentBannerIndex === 0 ? banners.length - 1 : currentBannerIndex - 1)}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
+        className="hidden sm:block absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
         aria-label="Banner anterior"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +99,7 @@ export function BannerSection() {
 
       <button
         onClick={() => handleBannerChange(currentBannerIndex === banners.length - 1 ? 0 : currentBannerIndex + 1)}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
+        className="hidden sm:block absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
         aria-label="Próximo banner"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,12 +108,12 @@ export function BannerSection() {
       </button>
 
       {/* Indicadores de banner */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => handleBannerChange(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               index === currentBannerIndex 
                 ? 'bg-white scale-125' 
                 : 'bg-white/50 hover:bg-white/75'
