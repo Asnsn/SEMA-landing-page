@@ -117,24 +117,6 @@ export default function ComoAjudarPage() {
                 </CardContent>
               </Card>
 
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                    <Heart className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle>Apadrinhamento</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="mb-4">
-                    Apadrinhe uma criança e acompanhe seu desenvolvimento nas atividades.
-                  </CardDescription>
-                  <Link href="/contato">
-                    <Button variant="outline" className="w-full bg-transparent">
-                      Apadrinhar
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
             </div>
 
             <Card className="bg-primary/5 border-primary/20">

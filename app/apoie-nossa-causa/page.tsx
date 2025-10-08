@@ -1,12 +1,34 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BreadcrumbNav } from "@/components/breadcrumb-nav"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { CreditCard, Smartphone, Building, Users } from "lucide-react"
+import { Users } from "lucide-react"
+import { useState } from "react"
 
 export default function ApoieNossaCausaPage() {
+  const [customAmount, setCustomAmount] = useState("")
+
+  const handleWhatsAppDonation = (amount: string) => {
+    const phoneNumber = "5519989178896"
+    const message = `Olá! Gostaria de fazer uma doação de R$ ${amount} para a SEMA. Como posso proceder?`
+    
+    const cleanNumber = phoneNumber.replace(/\D/g, '')
+    const encodedMessage = encodeURIComponent(message)
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedMessage}`
+    
+    window.open(whatsappUrl, '_blank')
+  }
+
+  const handleCustomDonation = () => {
+    if (customAmount && parseFloat(customAmount) > 0) {
+      handleWhatsAppDonation(customAmount)
+    }
+  }
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -39,7 +61,7 @@ export default function ApoieNossaCausaPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Ajuda a custear materiais esportivos para uma criança por um mês.
                   </p>
-                  <Button className="w-full">Doar R$ 50</Button>
+                  <Button className="w-full" onClick={() => handleWhatsAppDonation("50")}>Doar R$ 50</Button>
                 </CardContent>
               </Card>
 
@@ -52,7 +74,7 @@ export default function ApoieNossaCausaPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Cobre os custos de uma atividade completa para duas crianças.
                   </p>
-                  <Button className="w-full">Doar R$ 100</Button>
+                  <Button className="w-full" onClick={() => handleWhatsAppDonation("100")}>Doar R$ 100</Button>
                 </CardContent>
               </Card>
 
@@ -63,7 +85,7 @@ export default function ApoieNossaCausaPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">Patrocina um professor especializado por um mês.</p>
-                  <Button className="w-full">Doar R$ 200</Button>
+                  <Button className="w-full" onClick={() => handleWhatsAppDonation("200")}>Doar R$ 200</Button>
                 </CardContent>
               </Card>
             </div>
@@ -86,93 +108,65 @@ export default function ApoieNossaCausaPage() {
                         placeholder="0,00"
                         className="w-full pl-8 pr-4 py-2 border rounded-md"
                         min="1"
+                        value={customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value)}
                       />
                     </div>
                   </div>
-                  <Button>Doar Agora</Button>
+                  <Button onClick={handleCustomDonation} disabled={!customAmount || parseFloat(customAmount) <= 0}>
+                    Doar Agora
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Formas de Pagamento */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    Formas de Pagamento
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <CreditCard className="h-5 w-5 text-muted-foreground" />
-                    <span>Cartão de Crédito ou Débito</span>
+            {/* Impacto da Sua Doação */}
+            <Card className="mb-12">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  Impacto da Sua Doação
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm">R$ 25/mês</span>
+                    <span className="text-sm text-muted-foreground">Uniforme completo</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Smartphone className="h-5 w-5 text-muted-foreground" />
-                    <span>PIX</span>
+                  <div className="flex justify-between">
+                    <span className="text-sm">R$ 50/mês</span>
+                    <span className="text-sm text-muted-foreground">Materiais esportivos</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3 border rounded-lg">
-                    <Building className="h-5 w-5 text-muted-foreground" />
-                    <span>Transferência Bancária</span>
+                  <div className="flex justify-between">
+                    <span className="text-sm">R$ 100/mês</span>
+                    <span className="text-sm text-muted-foreground">Lanche para 20 crianças</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex justify-between">
+                    <span className="text-sm">R$ 200/mês</span>
+                    <span className="text-sm text-muted-foreground">Salário de um professor</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-primary" />
-                    Impacto da Sua Doação
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">R$ 25/mês</span>
-                      <span className="text-sm text-muted-foreground">Uniforme completo</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">R$ 50/mês</span>
-                      <span className="text-sm text-muted-foreground">Materiais esportivos</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">R$ 100/mês</span>
-                      <span className="text-sm text-muted-foreground">Lanche para 20 crianças</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">R$ 200/mês</span>
-                      <span className="text-sm text-muted-foreground">Salário de um professor</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Dados Bancários */}
+            {/* Informações PIX */}
             <Card className="mt-12 bg-muted/50">
               <CardHeader>
-                <CardTitle>Dados Bancários para Transferência</CardTitle>
-                <CardDescription>Para doações via transferência bancária ou PIX</CardDescription>
+                <CardTitle>Informações para Doação via PIX</CardTitle>
+                <CardDescription>Entre em contato via WhatsApp para receber nossa chave PIX e realizar sua doação</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-2">Conta Corrente</h4>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <p>Banco: Banco do Brasil</p>
-                      <p>Agência: 1234-5</p>
-                      <p>Conta: 12345-6</p>
-                      <p>CNPJ: 12.345.678/0001-90</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">PIX</h4>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <p>Chave PIX: institutosemahortolandia@gmail.com</p>
-                      <p>Favorecido: SEMA - Associação</p>
-                    </div>
-                  </div>
+                <div className="text-center">
+                  <p className="text-muted-foreground mb-4">
+                    Todas as doações são processadas via PIX através do nosso WhatsApp corporativo.
+                  </p>
+                  <Button 
+                    onClick={() => handleWhatsAppDonation("personalizado")}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Falar no WhatsApp
+                  </Button>
                 </div>
               </CardContent>
             </Card>

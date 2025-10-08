@@ -56,14 +56,14 @@ export function BannerSection() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-md sm:max-w-none">
-            <a href="/atividades" className="flex-1">
-              <button className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-xl transition-colors text-sm sm:text-base">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <a href="/atividades">
+              <button className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-xl transition-colors text-sm sm:text-base whitespace-nowrap">
                 Conheça Nossas Atividades
               </button>
             </a>
-            <a href="/como-ajudar" className="flex-1">
-              <button className="w-full px-6 py-3 bg-white/10 border border-white/30 text-white hover:bg-white/20 rounded-lg shadow-xl transition-colors backdrop-blur-sm text-sm sm:text-base">
+            <a href="/como-ajudar">
+              <button className="px-6 py-3 bg-white/10 border border-white/30 text-white hover:bg-white/20 rounded-lg shadow-xl transition-colors backdrop-blur-sm text-sm sm:text-base whitespace-nowrap">
                 Como Ajudar
               </button>
             </a>
