@@ -1,6 +1,12 @@
+"use client"
+
 import Link from "next/link"
+import { useSettings } from "@/lib/hooks/use-settings"
+import { Facebook, Instagram } from "lucide-react"
 
 export function Footer() {
+  const { settings } = useSettings()
+
   return (
     <footer className="bg-card border-t">
       <div className="container mx-auto px-4 md:px-6 py-12 max-w-7xl">
@@ -15,8 +21,32 @@ export function Footer() {
               <span className="text-xl font-bold text-primary">INSTITUTO SEMA</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Transformando vidas através do esporte e da cultura em Hortolândia há mais de 15 anos.
+              {settings?.org_description || "Transformando vidas através do esporte e da cultura em Hortolândia há mais de 15 anos."}
             </p>
+            
+            {/* Redes Sociais */}
+            <div className="flex space-x-4">
+              {settings?.facebook_url && (
+                <a 
+                  href={settings.facebook_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {settings?.instagram_url && (
+                <a 
+                  href={settings.instagram_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+            </div>
           </div>
 
           <div>
@@ -87,11 +117,9 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Contato</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>Rua Lidia Lopes Moreira, 278</p>
-              <p>Hortolândia - SP</p>
-              <p>CEP: 13184-696</p>
-              <p>Jd. Carmen Cristina</p>
-              <p>institutosemahortolandia@gmail.com</p>
+              <p>{settings?.contact_address || "Rua Lidia Lopes Moreira, 278 - Jd. Carmen Cristina, Hortolândia - SP"}</p>
+              <p>{settings?.contact_phone || "(19) 98917-8896"}</p>
+              <p>{settings?.contact_email || "institutosemahortolandia@gmail.com"}</p>
             </div>
           </div>
         </div>
