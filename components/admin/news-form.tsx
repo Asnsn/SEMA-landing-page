@@ -21,6 +21,8 @@ interface MediaFile {
   type: "image" | "video"
   name: string
   size: number
+  url?: string
+  path?: string
 }
 
 interface NewsFormProps {
@@ -80,32 +82,28 @@ export function NewsForm({ initialData }: NewsFormProps) {
     setFormData(prev => ({ ...prev, featured_image: url }))
   }
 
-  const uploadMediaFiles = async (files: MediaFile[]) => {
-    const uploadedFiles = []
+  const processMediaFiles = (files: MediaFile[]) => {
+    const processedFiles = []
     let featuredImageUrl = formData.featured_image // Manter a imagem destacada atual se houver
 
     for (const file of files) {
-      try {
-        // Usar a URL real do arquivo já enviado
-        const fileData = {
-          filename: file.name,
-          original_name: file.name,
-          file_type: file.type,
-          file_size: file.size,
-          mime_type: file.file.type,
-          url: file.url || file.preview,
-          thumbnail_url: file.type === "image" ? (file.url || file.preview) : null,
-          path: file.path,
-        }
-        
-        uploadedFiles.push(fileData)
-        
-        // Se for uma imagem e não tiver imagem destacada, usar como imagem destacada
-        if (file.type === "image" && !featuredImageUrl) {
-          featuredImageUrl = file.url || file.preview
-        }
-      } catch (error) {
-        console.error("Erro ao processar arquivo:", error)
+      // Usar os dados já processados pelo MediaUpload
+      const fileData = {
+        filename: file.name,
+        original_name: file.name,
+        file_type: file.type,
+        file_size: file.size,
+        mime_type: file.file.type,
+        url: file.url || file.preview,
+        thumbnail_url: file.type === "image" ? (file.url || file.preview) : null,
+        path: file.path,
+      }
+
+      processedFiles.push(fileData)
+
+      // Se for uma imagem e não tiver imagem destacada, usar como imagem destacada
+      if (file.type === "image" && !featuredImageUrl) {
+        featuredImageUrl = file.url || file.preview
       }
     }
 
@@ -114,7 +112,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
       setFormData(prev => ({ ...prev, featured_image: featuredImageUrl }))
     }
 
-    return uploadedFiles
+    return processedFiles
   }
 
   const handleSubmit = async (e: React.FormEvent, status?: string) => {
@@ -141,12 +139,12 @@ export function NewsForm({ initialData }: NewsFormProps) {
       const finalStatus = status || formData.status
       console.log("Status final:", finalStatus)
 
-      // Fazer upload dos arquivos de mídia (se houver)
-      let uploadedMedia = []
+      // Processar arquivos de mídia (já foram enviados pelo MediaUpload)
+      let processedMedia = []
       if (mediaFiles.length > 0) {
-        console.log("Fazendo upload de", mediaFiles.length, "arquivos...")
-        uploadedMedia = await uploadMediaFiles(mediaFiles)
-        console.log("Upload concluído:", uploadedMedia.length, "arquivos")
+        console.log("Processando", mediaFiles.length, "arquivos de mídia...")
+        processedMedia = processMediaFiles(mediaFiles)
+        console.log("Processamento concluído:", processedMedia.length, "arquivos")
       }
 
       const dataToSave = {
@@ -157,7 +155,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: uploadedMedia.length > 0 ? uploadedMedia : [],
+        media_files: processedMedia.length > 0 ? processedMedia : [],
         featured_media_type: formData.featured_media_type,
       }
 

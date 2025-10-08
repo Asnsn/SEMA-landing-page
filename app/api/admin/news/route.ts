@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createNewsPost, getNewsPosts } from "@/lib/database/supabase"
+import { createNewsPost, getNewsPosts, supabaseAdmin } from "@/lib/database/supabase"
 import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
@@ -25,9 +25,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Slug é obrigatório" }, { status: 400 })
     }
 
-    // Get current user from localStorage (this would need to be handled differently in production)
-    // For now, we'll use the provided admin user ID
-    const defaultAuthorId = "13a874dc-b22d-4013-b903-a29747c208dd" // ID do usuário admin obtido do Supabase
+    // Buscar o usuário admin padrão
+    const { data: adminUser, error: userError } = await supabaseAdmin
+      .from('admin_users')
+      .select('id')
+      .eq('email', 'admin@sema.org.br')
+      .single()
+
+    if (userError || !adminUser) {
+      console.error("Erro ao buscar usuário admin:", userError)
+      return NextResponse.json({ error: "Usuário admin não encontrado" }, { status: 500 })
+    }
+
+    const defaultAuthorId = adminUser.id
     console.log("Usando ID do admin:", defaultAuthorId)
 
     console.log("Preparando dados para criar post...")
