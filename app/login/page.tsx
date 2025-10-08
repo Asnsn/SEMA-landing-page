@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+const ADMIN_PASSWORD = "sema2024"
+
 export default function Page() {
-  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -21,33 +22,26 @@ export default function Page() {
     setError(null)
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.user) {
+      if (password === ADMIN_PASSWORD) {
         // Login bem-sucedido
         const userData = {
-          id: data.user.id,
-          email: data.user.email,
-          full_name: data.user.full_name,
-          role: data.user.role,
+          id: "admin",
+          email: "admin@sema.org.br",
+          full_name: "Administrador SEMA",
+          role: "admin",
           logged_in: true,
         }
 
+        // Salvar no localStorage
         localStorage.setItem("admin_user", JSON.stringify(userData))
+        
+        // Definir cookie para o servidor
+        document.cookie = `admin_user=${JSON.stringify(userData)}; path=/; max-age=86400; secure; samesite=lax`
+        document.cookie = `admin-token=sema2024; path=/; max-age=86400; secure; samesite=lax`
+        
         router.push("/admin")
       } else {
-        setError(data.error || "E-mail ou senha incorretos")
+        setError("Senha incorreta")
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Erro ao fazer login")
@@ -63,27 +57,17 @@ export default function Page() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Login Admin</CardTitle>
-              <CardDescription>Digite seu e-mail e senha para acessar o painel administrativo</CardDescription>
+              <CardDescription>Digite a senha para acessar o painel administrativo</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
-                    <Label htmlFor="email">E-mail</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="admin@sema.org.br"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Senha</Label>
+                    <Label htmlFor="password">Senha de Acesso</Label>
                     <Input
                       id="password"
                       type="password"
+                      placeholder="Digite a senha"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -95,9 +79,7 @@ export default function Page() {
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-xs text-muted-foreground">
-                  <p>Credenciais de teste:</p>
-                  <p>E-mail: admin@sema.org.br</p>
-                  <p>Senha: admin123</p>
+                  <p>Senha padrão: sema2024</p>
                 </div>
               </form>
             </CardContent>
