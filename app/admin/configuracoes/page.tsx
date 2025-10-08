@@ -7,20 +7,81 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Save, Settings, Globe, Mail, Phone, MapPin, Loader2, CheckCircle, AlertCircle } from "lucide-react"
-import { useSettings } from "@/lib/hooks/use-settings"
 import { useState, useEffect } from "react"
 
+interface SettingsData {
+  org_name: string
+  org_description: string
+  org_website: string
+  contact_email: string
+  contact_phone: string
+  contact_address: string
+  site_maintenance: boolean
+  news_comments: boolean
+  newsletter_enabled: boolean
+  meta_title: string
+  meta_description: string
+  facebook_url: string
+  instagram_url: string
+}
+
+const DEFAULT_SETTINGS: SettingsData = {
+  org_name: "SEMA - Sociedade Esportiva e Musical de Apoio",
+  org_description: "Transformando vidas através do esporte e da cultura em Hortolândia há mais de 15 anos.",
+  org_website: "https://sema-hortolandia.com.br",
+  contact_email: "institutosemahortolandia@gmail.com",
+  contact_phone: "(19) 98917-8896",
+  contact_address: "Rua Lidia Lopes Moreira, 278 - Jd. Carmen Cristina, Hortolândia - SP",
+  site_maintenance: false,
+  news_comments: true,
+  newsletter_enabled: false,
+  meta_title: "SEMA - Esporte e Educação para Todos | Hortolândia",
+  meta_description: "A SEMA é uma instituição em Hortolândia dedicada a oferecer esportes e atividades para crianças e jovens necessitados.",
+  facebook_url: "https://facebook.com/semahortolandia",
+  instagram_url: "https://instagram.com/semahortolandia"
+}
+
 export default function ConfiguracoesPage() {
-  const { settings, loading, saving, error, saveSettings } = useSettings()
-  const [formData, setFormData] = useState<any>({})
+  const [settings, setSettings] = useState<SettingsData | null>(null)
+  const [formData, setFormData] = useState<SettingsData>(DEFAULT_SETTINGS)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  // Atualizar formData quando settings carregarem
+  // Carregar configurações
   useEffect(() => {
-    if (settings) {
-      setFormData(settings)
+    const loadSettings = () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        if (typeof window !== 'undefined') {
+          const savedSettings = localStorage.getItem('sema_settings')
+          if (savedSettings) {
+            const parsedSettings = JSON.parse(savedSettings)
+            setSettings(parsedSettings)
+            setFormData({ ...DEFAULT_SETTINGS, ...parsedSettings })
+          } else {
+            setSettings(DEFAULT_SETTINGS)
+            setFormData(DEFAULT_SETTINGS)
+          }
+        } else {
+          setSettings(DEFAULT_SETTINGS)
+          setFormData(DEFAULT_SETTINGS)
+        }
+      } catch (err) {
+        console.error("Erro ao carregar configurações:", err)
+        setError(err instanceof Error ? err.message : "Erro desconhecido")
+        setSettings(DEFAULT_SETTINGS)
+        setFormData(DEFAULT_SETTINGS)
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [settings])
+
+    loadSettings()
+  }, [])
 
   const handleInputChange = (key: string, value: any) => {
     setFormData((prev: any) => ({
@@ -30,13 +91,32 @@ export default function ConfiguracoesPage() {
   }
 
   const handleSave = async () => {
-    const success = await saveSettings(formData)
-    setSaveStatus(success ? 'success' : 'error')
-    
-    // Limpar status após 3 segundos
-    setTimeout(() => {
-      setSaveStatus('idle')
-    }, 3000)
+    try {
+      setSaving(true)
+      setError(null)
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sema_settings', JSON.stringify(formData))
+        setSettings(formData)
+      }
+
+      setSaveStatus('success')
+      
+      // Limpar status após 3 segundos
+      setTimeout(() => {
+        setSaveStatus('idle')
+      }, 3000)
+    } catch (err) {
+      console.error("Erro ao salvar configurações:", err)
+      setError(err instanceof Error ? err.message : "Erro ao salvar")
+      setSaveStatus('error')
+      
+      setTimeout(() => {
+        setSaveStatus('idle')
+      }, 3000)
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (loading) {

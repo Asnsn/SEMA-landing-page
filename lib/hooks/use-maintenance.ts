@@ -16,6 +16,7 @@ export function useMaintenance() {
             setIsMaintenanceMode(parsedSettings.site_maintenance || false)
           } catch (error) {
             console.error('Erro ao verificar modo de manutenção:', error)
+            setIsMaintenanceMode(false)
           }
         }
       }
@@ -30,10 +31,14 @@ export function useMaintenance() {
       }
     }
 
-    window.addEventListener('storage', handleStorageChange)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange)
+    }
     
     return () => {
-      window.removeEventListener('storage', handleStorageChange)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleStorageChange)
+      }
     }
   }, [])
 

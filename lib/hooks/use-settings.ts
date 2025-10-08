@@ -53,6 +53,12 @@ export function useSettings() {
       setLoading(true)
       setError(null)
 
+      // Verificar se está no cliente
+      if (typeof window === 'undefined') {
+        setSettings(DEFAULT_SETTINGS)
+        return
+      }
+
       // Carregar do localStorage ou usar padrões
       const savedSettings = localStorage.getItem('sema_settings')
       
@@ -75,6 +81,11 @@ export function useSettings() {
     try {
       setSaving(true)
       setError(null)
+
+      // Verificar se está no cliente
+      if (typeof window === 'undefined') {
+        return false
+      }
 
       // Atualizar configurações
       const updatedSettings = { ...settings, ...newSettings }

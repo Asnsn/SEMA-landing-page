@@ -1,11 +1,35 @@
 "use client"
 
 import Link from "next/link"
-import { useSettings } from "@/lib/hooks/use-settings"
 import { Facebook, Instagram } from "lucide-react"
+import { useState, useEffect } from "react"
+
+interface SettingsData {
+  org_description?: string
+  contact_address?: string
+  contact_phone?: string
+  contact_email?: string
+  facebook_url?: string
+  instagram_url?: string
+}
 
 export function Footer() {
-  const { settings } = useSettings()
+  const [settings, setSettings] = useState<SettingsData | null>(null)
+
+  useEffect(() => {
+    // Carregar configurações do localStorage
+    if (typeof window !== 'undefined') {
+      const savedSettings = localStorage.getItem('sema_settings')
+      if (savedSettings) {
+        try {
+          const parsedSettings = JSON.parse(savedSettings)
+          setSettings(parsedSettings)
+        } catch (error) {
+          console.error('Erro ao carregar configurações:', error)
+        }
+      }
+    }
+  }, [])
 
   return (
     <footer className="bg-card border-t">
