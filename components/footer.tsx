@@ -98,6 +98,9 @@ export function Footer() {
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
           <p>&copy; 2024 INSTITUTO SEMA - Todos os direitos reservados. Desenvolvido com ❤️ para transformar vidas.</p>
+          <p className="mt-2 text-xs text-muted-foreground/80">
+            🔒 Site blindado e protegido contra malware - Navegação 100% segura
+          </p>
         </div>
       </div>
     </footer>
