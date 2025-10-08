@@ -4,8 +4,6 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
-import WhatsAppFloatButton from "@/components/whatsapp-float-button"
-import MaintenanceModeWrapper from "@/components/maintenance-mode-wrapper"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -121,8 +119,6 @@ export default function RootLayout({
       </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        <WhatsAppFloatButton />
-        <MaintenanceModeWrapper />
         <Analytics />
       </body>
     </html>
