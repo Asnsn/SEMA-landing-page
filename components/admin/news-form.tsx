@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -54,15 +53,14 @@ export function NewsForm({ initialData }: NewsFormProps) {
     status: initialData?.status || "draft",
   })
 
-  // Gerar slug automaticamente baseado no título
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-      .replace(/[^a-z0-9\s-]/g, "") // Remove caracteres especiais
-      .replace(/\s+/g, "-") // Substitui espaços por hífens
-      .replace(/-+/g, "-") // Remove hífens duplicados
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
       .trim()
   }
 
@@ -76,43 +74,14 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
   const handleMediaFilesChange = (files: MediaFile[]) => {
     setMediaFiles(files)
-  }
 
-  const handleFeaturedImageChange = (url: string) => {
-    setFormData(prev => ({ ...prev, featured_image: url }))
-  }
-
-  const processMediaFiles = (files: MediaFile[]) => {
-    const processedFiles = []
-    let featuredImageUrl = formData.featured_image // Manter a imagem destacada atual se houver
-
-    for (const file of files) {
-      // Usar os dados já processados pelo MediaUpload
-      const fileData = {
-        filename: file.name,
-        original_name: file.name,
-        file_type: file.type,
-        file_size: file.size,
-        mime_type: file.file.type,
-        url: file.url || file.preview,
-        thumbnail_url: file.type === "image" ? (file.url || file.preview) : null,
-        path: file.path,
-      }
-
-      processedFiles.push(fileData)
-
-      // Se for uma imagem e não tiver imagem destacada, usar como imagem destacada
-      if (file.type === "image" && !featuredImageUrl) {
-        featuredImageUrl = file.url || file.preview
-      }
-    }
-
-    // Atualizar o estado da imagem destacada se necessário
-    if (featuredImageUrl && featuredImageUrl !== formData.featured_image) {
-      setFormData(prev => ({ ...prev, featured_image: featuredImageUrl }))
-    }
-
-    return processedFiles
+    // --- ALTERAÇÃO IMPORTANTE AQUI ---
+    // Atualiza a imagem destacada sempre que a lista de arquivos mudar
+    const firstImage = files.find(file => file.type === 'image');
+    setFormData(prev => ({
+      ...prev,
+      featured_image: firstImage?.url || prev.featured_image
+    }));
   }
 
   const handleSubmit = async (e: React.FormEvent, status?: string) => {
@@ -120,49 +89,40 @@ export function NewsForm({ initialData }: NewsFormProps) {
     setIsLoading(true)
     setError(null)
 
-    // Validação básica
-    if (!formData.title.trim()) {
-      setError("O título é obrigatório")
-      setIsLoading(false)
-      return
-    }
-
-    if (!formData.content.trim()) {
-      setError("O conteúdo é obrigatório")
+    if (!formData.title.trim() || !formData.content.trim()) {
+      setError("Título e Conteúdo são obrigatórios")
       setIsLoading(false)
       return
     }
 
     try {
-      console.log("Iniciando publicação da notícia...")
+      const finalStatus = status || formData.status;
 
-      const finalStatus = status || formData.status
-      console.log("Status final:", finalStatus)
-
-      // Processar arquivos de mídia (já foram enviados pelo MediaUpload)
-      let processedMedia = []
-      if (mediaFiles.length > 0) {
-        console.log("Processando", mediaFiles.length, "arquivos de mídia...")
-        processedMedia = processMediaFiles(mediaFiles)
-        console.log("Processamento concluído:", processedMedia.length, "arquivos")
-      }
+      // --- LÓGICA DE SUBMISSÃO SIMPLIFICADA ---
+      const firstUploadedImage = mediaFiles.find(file => file.type === 'image');
+      const finalFeaturedImage = firstUploadedImage?.url || formData.featured_image;
 
       const dataToSave = {
         title: formData.title,
         content: formData.content,
         excerpt: formData.excerpt,
-        featured_image: formData.featured_image,
+        featured_image: finalFeaturedImage, // Garante que a URL correta é usada
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
-        media_files: processedMedia.length > 0 ? processedMedia : [],
+        media_files: mediaFiles.map(file => ({
+            filename: file.name,
+            original_name: file.name,
+            file_type: file.type,
+            file_size: file.size,
+            mime_type: file.file.type,
+            url: file.url || file.preview,
+            path: file.path,
+        })),
         featured_media_type: formData.featured_media_type,
-      }
-
-      console.log("Dados para salvar:", dataToSave)
+      };
 
       const url = initialData ? `/api/admin/news/${initialData.id}` : "/api/admin/news"
-
       const method = initialData ? "PUT" : "POST"
 
       const response = await fetch(url, {
@@ -181,20 +141,10 @@ export function NewsForm({ initialData }: NewsFormProps) {
       router.refresh()
     } catch (error: unknown) {
       console.error("Erro detalhado:", error)
-
       let errorMessage = "Ocorreu um erro inesperado"
-
       if (error instanceof Error) {
         errorMessage = `Erro: ${error.message}`
-      } else if (typeof error === "object" && error !== null) {
-        const errorObj = error as any
-        if (errorObj.message) {
-          errorMessage = `Erro: ${errorObj.message}`
-        } else if (errorObj.error) {
-          errorMessage = `Erro: ${errorObj.error}`
-        }
       }
-
       setError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -203,7 +153,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Botões de Ação */}
       <div className="flex items-center justify-between">
         <Button asChild variant="outline">
           <Link href="/admin/noticias">
@@ -251,7 +200,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 required
               />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="slug">URL (Slug)</Label>
               <Input
@@ -264,7 +212,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 A URL será: {typeof window !== "undefined" ? window.location.origin : ""}/blog/{formData.slug}
               </p>
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="excerpt">Resumo</Label>
               <Textarea
@@ -275,7 +222,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 rows={3}
               />
             </div>
-
             <div className="grid gap-2">
               <Label htmlFor="featured_image">Imagem Destacada (URL)</Label>
               <Input
@@ -286,25 +232,8 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 type="url"
               />
               <p className="text-xs text-gray-500">
-                Ou use o upload de mídia abaixo para adicionar múltiplas imagens e vídeos
+                O upload de mídia abaixo preenche este campo automaticamente com a primeira imagem.
               </p>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="status">Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, status: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Rascunho</SelectItem>
-                  <SelectItem value="published">Publicada</SelectItem>
-                  <SelectItem value="archived">Arquivada</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </CardContent>
         </Card>
@@ -320,7 +249,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
           <CardContent>
             <MediaUpload
               onFilesChange={handleMediaFilesChange}
-              onFeaturedImageChange={handleFeaturedImageChange}
               maxFiles={10}
               acceptedTypes={["image/*", "video/*"]}
               maxSize={50}
