@@ -20,8 +20,8 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 // Função para verificar se as configurações são válidas
 export function isSupabaseConfigured(): boolean {
-  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && 
-           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && 
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL &&
+           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
            process.env.SUPABASE_SERVICE_ROLE_KEY)
 }
 
@@ -45,7 +45,7 @@ export interface NewsPost {
   featured_image?: string
   slug: string
   status: "draft" | "published" | "archived"
-  author_id?: string // <--- LINHA ALTERADA
+  author_id?: string // <--- ALTERAÇÃO 1 AQUI
   created_at: string
   updated_at: string
   published_at?: string
@@ -245,7 +245,7 @@ export async function createNewsPost(postData: {
   featured_image?: string
   slug: string
   status: "draft" | "published" | "archived"
-  author_id?: string // <--- LINHA ALTERADA
+  author_id?: string // <--- ALTERAÇÃO 2 AQUI
   media_files?: any[]
   featured_media_type?: string
   published_at?: string
@@ -307,7 +307,7 @@ export async function updateSiteSetting(
   try {
     const { error } = await supabaseAdmin
       .from('site_settings')
-      .update({ 
+      .update({
         setting_value: value,
         updated_at: new Date().toISOString()
       })
