@@ -29,7 +29,7 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
         updated_at,
         published_at,
         author_id,
-        admin_users(full_name, email) // <-- CORREÇÃO AQUI: removido o "!inner"
+        admin_users(full_name, email) // SEM o "!inner"
       `)
       .eq('id', id)
       .single()
