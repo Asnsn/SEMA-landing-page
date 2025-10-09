@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react" // Importa o useEffect
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -53,6 +53,25 @@ export function NewsForm({ initialData }: NewsFormProps) {
     status: initialData?.status || "draft",
   })
 
+  // --- INÍCIO DA NOVA ALTERAÇÃO ---
+  // Este bloco carrega as mídias existentes quando o formulário é para edição
+  useEffect(() => {
+    if (initialData?.media_files && Array.isArray(initialData.media_files)) {
+      const existingMedia = initialData.media_files.map((fileData: any) => ({
+        id: fileData.path || fileData.url,
+        preview: fileData.url,
+        url: fileData.url,
+        path: fileData.path,
+        name: fileData.filename || fileData.original_name,
+        type: fileData.mime_type?.startsWith('image/') ? 'image' : 'video',
+        size: fileData.file_size || 0,
+        file: new File([], fileData.filename || 'arquivo existente'), // Cria um objeto File vazio
+      }));
+      setMediaFiles(existingMedia);
+    }
+  }, [initialData]);
+  // --- FIM DA NOVA ALTERAÇÃO ---
+
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
@@ -74,9 +93,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
   const handleMediaFilesChange = (files: MediaFile[]) => {
     setMediaFiles(files)
-
-    // --- ALTERAÇÃO IMPORTANTE AQUI ---
-    // Atualiza a imagem destacada sempre que a lista de arquivos mudar
     const firstImage = files.find(file => file.type === 'image');
     setFormData(prev => ({
       ...prev,
@@ -97,8 +113,6 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
     try {
       const finalStatus = status || formData.status;
-
-      // --- LÓGICA DE SUBMISSÃO SIMPLIFICADA ---
       const firstUploadedImage = mediaFiles.find(file => file.type === 'image');
       const finalFeaturedImage = firstUploadedImage?.url || formData.featured_image;
 
@@ -106,7 +120,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
         title: formData.title,
         content: formData.content,
         excerpt: formData.excerpt,
-        featured_image: finalFeaturedImage, // Garante que a URL correta é usada
+        featured_image: finalFeaturedImage,
         slug: formData.slug,
         status: finalStatus,
         published_at: finalStatus === "published" ? new Date().toISOString() : null,
