@@ -14,8 +14,6 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
   let post: any = null
 
   try {
-    // --- INÍCIO DA CORREÇÃO FINAL ---
-    // A consulta agora busca APENAS os dados da notícia, sem tentar buscar o autor.
     const { data, error } = await supabaseAdmin
       .from('news_posts')
       .select(`
@@ -28,11 +26,11 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
         status,
         created_at,
         updated_at,
-        published_at
+        published_at,
+        media_files -- <-- A CORREÇÃO FINAL ESTÁ AQUI
       `)
       .eq('id', id)
       .single()
-    // --- FIM DA CORREÇÃO FINAL ---
 
     if (data && !error) {
       post = data
