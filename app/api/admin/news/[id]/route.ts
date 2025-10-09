@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from 'next/cache' // Adicionado para limpar o cache
 import { updateNewsPost, deleteNewsPost } from "@/lib/database/supabase"
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -14,10 +15,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       slug: data.slug,
       status: data.status,
       published_at: data.published_at,
+      media_files: data.media_files, // Adicionado para permitir atualização de mídias
     })
 
     if (!post) {
       return NextResponse.json({ error: "Notícia não encontrada" }, { status: 404 })
+    }
+
+    // Revalida as páginas após a atualização
+    revalidatePath('/admin/noticias')
+    revalidatePath('/blog')
+    revalidatePath('/')
+    if (post.slug) {
+      revalidatePath(`/blog/${post.slug}`)
     }
 
     return NextResponse.json({ success: true })
@@ -37,6 +47,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     if (!success) {
       return NextResponse.json({ error: "Notícia não encontrada" }, { status: 404 })
     }
+
+    // --- INÍCIO DA ALTERAÇÃO ---
+    // Limpa o cache da página de admin
+    revalidatePath('/admin/noticias')
+    // Limpa o cache da página principal do blog
+    revalidatePath('/blog')
+    // Limpa o cache da página inicial
+    revalidatePath('/')
+    // --- FIM DA ALTERAÇÃO ---
 
     return NextResponse.json({ success: true })
   } catch (error) {
