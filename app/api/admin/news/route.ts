@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from 'next/cache' // <-- ADICIONE ESTA LINHA NO TOPO
 import { createNewsPost } from "@/lib/database/supabase"
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
-    // Validação dos dados obrigatórios
     if (!data.title || !data.content || !data.slug) {
       return NextResponse.json({ error: "Título, conteúdo e slug são obrigatórios" }, { status: 400 })
     }
@@ -28,12 +28,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Erro ao criar notícia no banco de dados" }, { status: 500 })
     }
 
+    revalidatePath('/admin/noticias') // <-- ADICIONE ESTA LINHA AQUI
+
     return NextResponse.json({ success: true, id: post.id })
   } catch (error) {
     console.error("Erro ao criar notícia:", error)
-    return NextResponse.json({ 
-      error: "Erro interno do servidor", 
-      details: error instanceof Error ? error.message : "Erro desconhecido" 
+    return NextResponse.json({
+      error: "Erro interno do servidor",
+      details: error instanceof Error ? error.message : "Erro desconhecido"
     }, { status: 500 })
   }
 }
