@@ -2,7 +2,6 @@ import { NewsForm } from "@/components/admin/news-form"
 import { notFound } from "next/navigation"
 import { supabaseAdmin } from "@/lib/database/supabase"
 
-// Adicionado para garantir que a página sempre busque os dados mais recentes
 export const dynamic = 'force-dynamic'
 
 interface EditNoticiaPageProps {
@@ -15,6 +14,8 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
   let post: any = null
 
   try {
+    // --- INÍCIO DA CORREÇÃO FINAL ---
+    // A consulta agora busca APENAS os dados da notícia, sem tentar buscar o autor.
     const { data, error } = await supabaseAdmin
       .from('news_posts')
       .select(`
@@ -27,22 +28,17 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
         status,
         created_at,
         updated_at,
-        published_at,
-        author_id,
-        admin_users(full_name, email) // SEM o "!inner"
+        published_at
       `)
       .eq('id', id)
       .single()
+    // --- FIM DA CORREÇÃO FINAL ---
 
     if (data && !error) {
-      post = {
-        ...data,
-        full_name: data.admin_users?.full_name,
-        email: data.admin_users?.email
-      }
+      post = data
     }
   } catch (error) {
-    console.error("Erro ao buscar notícia:", error)
+    console.error("Erro ao buscar notícia para edição:", error)
   }
 
   if (!post) {
