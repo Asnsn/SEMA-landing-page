@@ -5,10 +5,10 @@ import { useState, useEffect } from "react"
 export function BannerSection() {
   const banners = [
     "/banner%20sema.jpg",
-    "/banner%202.jpg", 
+    "/banner%202.jpg",
     "/banner%203.jpg"
   ]
-  
+
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
 
@@ -16,7 +16,7 @@ export function BannerSection() {
     if (isPaused) return
 
     const interval = setInterval(() => {
-      setCurrentBannerIndex((prevIndex) => 
+      setCurrentBannerIndex((prevIndex) =>
         prevIndex === banners.length - 1 ? 0 : prevIndex + 1
       )
     }, 4000) // 4 segundos
@@ -32,7 +32,7 @@ export function BannerSection() {
   }
 
   return (
-    <section 
+    <section
       className="relative min-h-[500px] sm:min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden transition-all duration-1000 ease-in-out"
       style={{
         backgroundImage: `url('${banners[currentBannerIndex]}')`,
@@ -43,13 +43,14 @@ export function BannerSection() {
     >
       {/* Overlay escuro para contraste */}
       <div className="absolute inset-0 bg-black/40 sm:bg-black/50"></div>
-      
+
       {/* Conteúdo */}
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
         <div className="flex flex-col items-center space-y-4 sm:space-y-6 text-center">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-balance text-white drop-shadow-2xl leading-tight">
-              <span className="text-primary drop-shadow-lg">Semeando amor</span>, transformando vidas
+            {/* --- A ALTERAÇÃO ESTÁ AQUI --- */}
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-balance text-white drop-shadow-2xl leading-tight uppercase">
+              <span className="text-primary drop-shadow-lg">Semeando amor</span> transformando vidas
             </h1>
             <p className="mx-auto max-w-[600px] sm:max-w-[700px] text-white/95 text-base sm:text-lg md:text-xl text-pretty drop-shadow-lg font-medium px-4">
               A SEMA oferece oportunidades esportivas e culturais para crianças e jovens.
@@ -114,8 +115,8 @@ export function BannerSection() {
             key={index}
             onClick={() => handleBannerChange(index)}
             className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-              index === currentBannerIndex 
-                ? 'bg-white scale-125' 
+              index === currentBannerIndex
+                ? 'bg-white scale-125'
                 : 'bg-white/50 hover:bg-white/75'
             }`}
             aria-label={`Ir para banner ${index + 1}`}

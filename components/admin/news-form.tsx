@@ -4,7 +4,6 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-// A linha que importa o Card está aqui:
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -81,13 +80,28 @@ export function NewsForm({ initialData }: NewsFormProps) {
       .trim()
   }
 
+  // --- INÍCIO DA ALTERAÇÃO ---
   const handleTitleChange = (title: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      title,
-      slug: generateSlug(title),
-    }))
-  }
+    setFormData((prev) => {
+      // Se não houver "initialData", significa que é uma notícia NOVA.
+      // Nesse caso, atualize o slug junto com o título.
+      if (!initialData) {
+        return {
+          ...prev,
+          title,
+          slug: generateSlug(title),
+        };
+      }
+
+      // Se houver "initialData", é uma edição.
+      // Nesse caso, atualize APENAS o título.
+      return {
+        ...prev,
+        title,
+      };
+    });
+  };
+  // --- FIM DA ALTERAÇÃO ---
 
   const handleMediaFilesChange = (files: MediaFile[]) => {
     setMediaFiles(files);
@@ -219,6 +233,7 @@ export function NewsForm({ initialData }: NewsFormProps) {
                 value={formData.slug}
                 onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
                 placeholder="url-da-noticia"
+                disabled={!!initialData} // Desabilita a edição do slug para posts existentes
               />
               <p className="text-xs text-gray-500">
                 A URL será: {typeof window !== "undefined" ? window.location.origin : ""}/blog/{formData.slug}
