@@ -31,7 +31,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         slug,
         created_at,
         published_at,
-        admin_users!inner(full_name, email)
+        admin_users(full_name, email)
       `)
       .eq('slug', slug)
       .eq('status', 'published')
