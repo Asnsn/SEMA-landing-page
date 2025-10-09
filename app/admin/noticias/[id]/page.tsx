@@ -10,6 +10,7 @@ interface EditNoticiaPageProps {
 
 export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) {
   const { id } = await params
+  console.log(`[DEBUG] Carregando página de edição para o ID: ${id}`); // Log 1: Mostra o ID
 
   let post: any = null
 
@@ -27,19 +28,30 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
         created_at,
         updated_at,
         published_at,
-        media_files -- <-- A CORREÇÃO FINAL ESTÁ AQUI
+        media_files
       `)
       .eq('id', id)
       .single()
 
+    // --- INÍCIO DOS LOGS DE DEPURAÇÃO ---
+    if (error) {
+      console.error('[DEBUG] Erro retornado pelo Supabase:', error); // Log 2: Mostra o erro exato do Supabase
+    }
+    if (!data) {
+      console.warn('[DEBUG] Nenhum dado (data) foi retornado pelo Supabase.'); // Log 3: Confirma se os dados estão vazios
+    }
+    // --- FIM DOS LOGS DE DEPURAÇÃO ---
+
     if (data && !error) {
+      console.log(`[DEBUG] Notícia encontrada com sucesso: ${data.title}`); // Log 4: Confirma o sucesso
       post = data
     }
   } catch (error) {
-    console.error("Erro ao buscar notícia para edição:", error)
+    console.error("[DEBUG] Erro CRÍTICO ao buscar notícia para edição:", error); // Log 5: Captura erros maiores
   }
 
   if (!post) {
+    console.log(`[DEBUG] "post" é nulo. Acionando notFound() para o ID: ${id}`); // Log 6: Confirma por que o 404 é chamado
     notFound()
   }
 
