@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import MaintenanceMode from "./maintenance-mode"
+import { MaintenanceMode } from "./maintenance-mode" // A correção está aqui
 
 export default function MaintenanceModeWrapper() {
   const [isMaintenanceMode, setIsMaintenanceMode] = useState(false)
@@ -20,6 +20,6 @@ export default function MaintenanceModeWrapper() {
       }
     }
   }, [])
-  
+
   return <MaintenanceMode isEnabled={isMaintenanceMode} />
 }
