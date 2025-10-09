@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { revalidatePath } from 'next/cache' // <-- ADICIONE ESTA LINHA NO TOPO
+import { revalidatePath } from 'next/cache'
 import { createNewsPost } from "@/lib/database/supabase"
 
 export async function POST(request: NextRequest) {
@@ -28,7 +28,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Erro ao criar notícia no banco de dados" }, { status: 500 })
     }
 
-    revalidatePath('/admin/noticias') // <-- ADICIONE ESTA LINHA AQUI
+    // --- INÍCIO DA ALTERAÇÃO ---
+    // Limpa o cache da página de admin (já tínhamos feito)
+    revalidatePath('/admin/noticias')
+    // Limpa o cache da página principal do blog
+    revalidatePath('/blog')
+    // Limpa o cache da página inicial (que também mostra notícias)
+    revalidatePath('/')
+    // --- FIM DA ALTERAÇÃO ---
 
     return NextResponse.json({ success: true, id: post.id })
   } catch (error) {
