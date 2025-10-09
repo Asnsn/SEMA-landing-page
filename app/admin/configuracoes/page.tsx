@@ -44,7 +44,8 @@ const DEFAULT_SETTINGS: SettingsData = {
 export default function ConfiguracoesPage() {
   const [settings, setSettings] = useState<SettingsData | null>(null)
   const [formData, setFormData] = useState<SettingsData>(DEFAULT_SETTINGS)
-  const [loading, setLoading] useState(true)
+  // --- CORREÇÃO AQUI ---
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
