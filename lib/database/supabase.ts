@@ -45,7 +45,7 @@ export interface NewsPost {
   featured_image?: string
   slug: string
   status: "draft" | "published" | "archived"
-  author_id: string
+  author_id?: string // <--- LINHA ALTERADA
   created_at: string
   updated_at: string
   published_at?: string
@@ -245,7 +245,7 @@ export async function createNewsPost(postData: {
   featured_image?: string
   slug: string
   status: "draft" | "published" | "archived"
-  author_id: string
+  author_id?: string // <--- LINHA ALTERADA
   media_files?: any[]
   featured_media_type?: string
   published_at?: string
