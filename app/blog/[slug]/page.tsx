@@ -7,7 +7,6 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Calendar, User } from "lucide-react"
 import { supabaseAdmin } from "@/lib/database/supabase"
 
-// ADICIONE ESTA LINHA PARA FORÇAR A PÁGINA A SEMPRE BUSCAR DADOS NOVOS
 export const dynamic = 'force-dynamic'
 
 interface BlogPostPageProps {
@@ -20,6 +19,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   let post: any = null
 
   try {
+    // --- INÍCIO DA ALTERAÇÃO ---
+    // A consulta agora busca APENAS os dados da notícia, sem o autor.
     const { data, error } = await supabaseAdmin
       .from('news_posts')
       .select(`
@@ -30,19 +31,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         featured_image,
         slug,
         created_at,
-        published_at,
-        admin_users(full_name, email)
+        published_at
       `)
       .eq('slug', slug)
       .eq('status', 'published')
       .single()
+    // --- FIM DA ALTERAÇÃO ---
 
     if (data && !error) {
-      post = {
-        ...data,
-        full_name: data.admin_users?.full_name,
-        email: data.admin_users?.email
-      }
+      post = data
     }
   } catch (error) {
     console.error("Erro ao buscar post:", error)
@@ -61,7 +58,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const formatContent = (content: string) => {
-    // Converter quebras de linha em parágrafos
     return content.split("\n").map((paragraph, index) => {
       if (paragraph.trim() === "") return null
       return (
@@ -80,7 +76,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="container px-4 md:px-6 max-w-4xl">
             <BreadcrumbNav items={[{ label: "Notícias", href: "/blog" }, { label: post.title }]} />
 
-            {/* Botão Voltar */}
             <div className="mb-8">
               <Button asChild variant="outline" size="sm">
                 <Link href="/blog">
@@ -90,7 +85,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </Button>
             </div>
 
-            {/* Imagem Destacada */}
             {post.featured_image && (
               <div className="aspect-video overflow-hidden rounded-lg mb-8">
                 <img
@@ -101,16 +95,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             )}
 
-            {/* Cabeçalho do Post */}
             <header className="mb-8">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4 text-balance">{post.title}</h1>
-
               {post.excerpt && <p className="text-xl text-gray-600 mb-6 text-pretty">{post.excerpt}</p>}
-
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span>Por {post.full_name || 'Equipe SEMA'}</span>
+                  {/* --- ALTERAÇÃO AQUI --- */}
+                  {/* Exibe um texto padrão em vez de buscar o nome do autor */}
+                  <span>Por Equipe SEMA</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -119,10 +112,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             </header>
 
-            {/* Conteúdo */}
             <div className="prose prose-lg max-w-none">{formatContent(post.content)}</div>
 
-            {/* Rodapé do Post */}
             <footer className="mt-12 pt-8 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500">Publicado pelo INSTITUTO SEMA</div>
