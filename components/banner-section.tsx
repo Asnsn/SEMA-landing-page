@@ -1,54 +1,34 @@
 "use client"
 
-import { useState, useEffect } from "react"
+// Removemos os hooks useState e useEffect que controlavam o carrossel
 
 export function BannerSection() {
-  const banners = [
-    "/banner%20sema.jpg",
-    "/banner%202.jpg",
-    "/banner%203.jpg"
-  ]
-
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-
-  useEffect(() => {
-    if (isPaused) return
-
-    const interval = setInterval(() => {
-      setCurrentBannerIndex((prevIndex) =>
-        prevIndex === banners.length - 1 ? 0 : prevIndex + 1
-      )
-    }, 4000) // 4 segundos
-
-    return () => clearInterval(interval)
-  }, [banners.length, isPaused])
-
-  const handleBannerChange = (newIndex: number) => {
-    setCurrentBannerIndex(newIndex)
-    setIsPaused(true)
-    // Retomar o carrossel após 30 segundos de inatividade
-    setTimeout(() => setIsPaused(false), 30000)
-  }
-
   return (
     <section
-      className="relative min-h-[500px] sm:min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden transition-all duration-1000 ease-in-out"
-      style={{
-        backgroundImage: `url('${banners[currentBannerIndex]}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
+      className="relative min-h-[500px] sm:min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden"
     >
-      {/* Overlay escuro para contraste */}
+      {/* --- INÍCIO DA ALTERAÇÃO --- */}
+      {/* Adicionamos o player de vídeo como fundo */}
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline 
+        className="absolute w-full h-full object-cover -z-10"
+      >
+        {/* O nome do seu vídeo já está configurado aqui */}
+        <source src="/videobanner.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeos.
+      </video>
+      {/* --- FIM DA ALTERAÇÃO --- */}
+
+      {/* Overlay escuro para contraste (continua o mesmo) */}
       <div className="absolute inset-0 bg-black/40 sm:bg-black/50"></div>
 
-      {/* Conteúdo */}
+      {/* Conteúdo (continua o mesmo) */}
       <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
         <div className="flex flex-col items-center space-y-4 sm:space-y-6 text-center">
           <div className="space-y-3 sm:space-y-4">
-            {/* --- A ALTERAÇÃO ESTÁ AQUI --- */}
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-balance text-white drop-shadow-2xl leading-tight uppercase">
               <span className="text-primary drop-shadow-lg">Semeando amor</span> transformando vidas
             </h1>
@@ -87,42 +67,7 @@ export function BannerSection() {
         </div>
       </div>
 
-      {/* Botões de navegação - apenas em desktop */}
-      <button
-        onClick={() => handleBannerChange(currentBannerIndex === 0 ? banners.length - 1 : currentBannerIndex - 1)}
-        className="hidden sm:block absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
-        aria-label="Banner anterior"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-
-      <button
-        onClick={() => handleBannerChange(currentBannerIndex === banners.length - 1 ? 0 : currentBannerIndex + 1)}
-        className="hidden sm:block absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-300 z-20"
-        aria-label="Próximo banner"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      {/* Indicadores de banner */}
-      <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-        {banners.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleBannerChange(index)}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-              index === currentBannerIndex
-                ? 'bg-white scale-125'
-                : 'bg-white/50 hover:bg-white/75'
-            }`}
-            aria-label={`Ir para banner ${index + 1}`}
-          />
-        ))}
-      </div>
+      {/* Os botões de navegação e indicadores do carrossel foram removidos */}
     </section>
   )
 }
