@@ -7,6 +7,9 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Calendar, User } from "lucide-react"
 import { supabaseAdmin } from "@/lib/database/supabase"
 
+// ADICIONE ESTA LINHA PARA FORÇAR A PÁGINA A SEMPRE BUSCAR DADOS NOVOS
+export const dynamic = 'force-dynamic'
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
 }
@@ -28,7 +31,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         slug,
         created_at,
         published_at,
-        author_id,
         admin_users!inner(full_name, email)
       `)
       .eq('slug', slug)
@@ -108,7 +110,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span>Por {post.full_name}</span>
+                  <span>Por {post.full_name || 'Equipe SEMA'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -123,7 +125,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Rodapé do Post */}
             <footer className="mt-12 pt-8 border-t border-gray-200">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">Publicado pelo INSTITUTO SEMA - Instituição Social de Hortolândia</div>
+                <div className="text-sm text-gray-500">Publicado pelo INSTITUTO SEMA</div>
                 <Button asChild variant="outline" size="sm">
                   <Link href="/blog">Ver Mais Notícias</Link>
                 </Button>
