@@ -2,6 +2,9 @@ import { NewsForm } from "@/components/admin/news-form"
 import { notFound } from "next/navigation"
 import { supabaseAdmin } from "@/lib/database/supabase"
 
+// Adicionado para garantir que a página sempre busque os dados mais recentes
+export const dynamic = 'force-dynamic'
+
 interface EditNoticiaPageProps {
   params: Promise<{ id: string }>
 }
@@ -26,7 +29,7 @@ export default async function EditNoticiaPage({ params }: EditNoticiaPageProps) 
         updated_at,
         published_at,
         author_id,
-        admin_users!inner(full_name, email)
+        admin_users(full_name, email) // <-- CORREÇÃO AQUI: removido o "!inner"
       `)
       .eq('id', id)
       .single()
