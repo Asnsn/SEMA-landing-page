@@ -255,8 +255,13 @@ export async function createNewsPost(postData: {
   }
 
   try {
+    const isValidUuid = (value?: string) =>
+      !!value && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)
+
     // Garante que teremos um author_id válido, respeitando o NOT NULL da tabela
-    let resolvedAuthorId = postData.author_id || process.env.SUPABASE_DEFAULT_AUTHOR_ID || ""
+    let resolvedAuthorId = (isValidUuid(postData.author_id) ? postData.author_id : undefined)
+      || (isValidUuid(process.env.SUPABASE_DEFAULT_AUTHOR_ID) ? process.env.SUPABASE_DEFAULT_AUTHOR_ID : undefined)
+      || ""
     const defaultAuthorEmail = process.env.SUPABASE_DEFAULT_AUTHOR_EMAIL
 
     if (!resolvedAuthorId) {
