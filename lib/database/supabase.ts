@@ -308,8 +308,30 @@ export async function createNewsPost(postData: {
       }
     }
 
+    // Se já existir um post com o mesmo slug, gera um único automaticamente: slug, slug-2, slug-3, ...
+    const ensureUniqueSlug = async (baseSlug: string): Promise<string> => {
+      const normalized = baseSlug.trim().toLowerCase()
+      const { data } = await supabaseAdmin
+        .from('news_posts')
+        .select('slug')
+        .ilike('slug', `${normalized}%`)
+
+      if (!data || data.length === 0) return normalized
+
+      const existing = new Set((data as { slug: string }[]).map((r) => r.slug))
+      if (!existing.has(normalized)) return normalized
+
+      // encontra próximo sufixo disponível
+      let i = 2
+      while (existing.has(`${normalized}-${i}`)) i += 1
+      return `${normalized}-${i}`
+    }
+
+    const uniqueSlug = await ensureUniqueSlug(postData.slug)
+
     const insertData = {
       ...postData,
+      slug: uniqueSlug,
       author_id: resolvedAuthorId,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
