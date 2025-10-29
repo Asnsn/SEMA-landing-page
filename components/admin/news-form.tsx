@@ -93,8 +93,12 @@ export function NewsForm({ initialData }: NewsFormProps) {
         media_files: mediaFiles.map((f) => ({ url: f.url ?? f.preview, type: f.type, name: f.name })),
       }
 
-      const res = await fetch("/api/admin/news", {
-        method: "POST",
+      const isEditing = !!initialData?.id
+      const url = isEditing ? `/api/admin/news/${initialData?.id}` : "/api/admin/news"
+      const method = isEditing ? "PUT" : "POST"
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
