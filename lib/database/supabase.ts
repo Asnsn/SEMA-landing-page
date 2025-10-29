@@ -257,23 +257,37 @@ export async function createNewsPost(postData: {
   try {
     // Garante que teremos um author_id válido, respeitando o NOT NULL da tabela
     let resolvedAuthorId = postData.author_id || process.env.SUPABASE_DEFAULT_AUTHOR_ID || ""
+    const defaultAuthorEmail = process.env.SUPABASE_DEFAULT_AUTHOR_EMAIL
 
     if (!resolvedAuthorId) {
-      // Como fallback, pega o primeiro admin existente
-      const { data: anyAdmin } = await supabaseAdmin
-        .from('admin_users')
-        .select('id')
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle()
+      // Tenta resolver por e-mail padrão, se configurado
+      if (defaultAuthorEmail) {
+        const { data: byEmail } = await supabaseAdmin
+          .from('admin_users')
+          .select('id')
+          .eq('email', defaultAuthorEmail)
+          .maybeSingle()
+        if (byEmail?.id) {
+          resolvedAuthorId = byEmail.id
+        }
+      }
 
-      if (anyAdmin?.id) {
-        resolvedAuthorId = anyAdmin.id
+      // Se ainda não resolveu, pega o primeiro admin existente
+      if (!resolvedAuthorId) {
+        const { data: anyAdmin } = await supabaseAdmin
+          .from('admin_users')
+          .select('id')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+        if (anyAdmin?.id) {
+          resolvedAuthorId = anyAdmin.id
+        }
       }
     }
 
     if (!resolvedAuthorId) {
-      console.error("createNewsPost: author_id ausente e nenhum admin encontrado. Configure SUPABASE_DEFAULT_AUTHOR_ID.")
+      console.error("createNewsPost: author_id ausente e nenhum admin encontrado. Configure SUPABASE_DEFAULT_AUTHOR_ID ou SUPABASE_DEFAULT_AUTHOR_EMAIL.")
       return null
     }
 
