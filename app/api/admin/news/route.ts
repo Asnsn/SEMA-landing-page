@@ -1,9 +1,16 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { revalidatePath } from 'next/cache'
-import { createNewsPost } from "@/lib/database/supabase"
+import { createNewsPost, isSupabaseConfigured } from "@/lib/database/supabase"
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({
+        error: "Supabase não configurado",
+        details: "Defina NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY e SUPABASE_SERVICE_ROLE_KEY no ambiente de execução."
+      }, { status: 500 })
+    }
+
     const data = await request.json()
 
     if (!data.title || !data.content || !data.slug) {
@@ -17,6 +24,7 @@ export async function POST(request: NextRequest) {
       featured_image: data.featured_image || null,
       slug: data.slug,
       status: data.status || 'draft',
+      author_id: data.author_id, // preferir o author do cliente quando presente
       media_files: data.media_files || [],
       featured_media_type: data.featured_media_type || 'image',
       published_at: data.published_at || null,
@@ -25,7 +33,10 @@ export async function POST(request: NextRequest) {
     const post = await createNewsPost(postData)
 
     if (!post) {
-      return NextResponse.json({ error: "Erro ao criar notícia no banco de dados" }, { status: 500 })
+      return NextResponse.json({
+        error: "Erro ao criar notícia no banco de dados",
+        details: "Verifique se existe um admin em public.admin_users e configure SUPABASE_DEFAULT_AUTHOR_ID, ou envie author_id no body."
+      }, { status: 500 })
     }
 
     // --- INÍCIO DA ALTERAÇÃO ---

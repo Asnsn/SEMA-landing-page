@@ -77,8 +77,19 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
     try {
       setSubmitting(true)
+      // Tenta enviar o author_id do admin logado salvo no localStorage
+      let authorId: string | undefined
+      try {
+        const stored = localStorage.getItem("admin_user")
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (parsed?.id) authorId = parsed.id as string
+        }
+      } catch {}
+
       const body = {
         ...formData,
+        author_id: authorId,
         media_files: mediaFiles.map((f) => ({ url: f.url ?? f.preview, type: f.type, name: f.name })),
       }
 
@@ -90,7 +101,8 @@ export function NewsForm({ initialData }: NewsFormProps) {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err?.error || "Falha ao salvar a notícia")
+        const details = err?.details ? `\nDetalhes: ${err.details}` : ""
+        throw new Error((err?.error || "Falha ao salvar a notícia") + details)
       }
 
       router.push("/admin/noticias")
