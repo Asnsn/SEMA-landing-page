@@ -203,16 +203,28 @@ export function NewsForm({ initialData }: NewsFormProps) {
               </div>
             </div>
 
+          {formData.featured_image && (
+            <div className="grid gap-2">
+              <Label>Atual em destaque (preview)</Label>
+              {formData.featured_media_type === 'video' ? (
+                <video src={formData.featured_image} className="w-full max-w-md rounded" controls />
+              ) : (
+                <img src={formData.featured_image} alt="Mídia atual" className="w-full max-w-md rounded" />
+              )}
+              <p className="text-xs text-gray-500">Ao enviar nova mídia abaixo, a imagem/vídeo em destaque será substituída.</p>
+            </div>
+          )}
+
             <div className="grid gap-2">
               <Label>Uploads (imagens/vídeos)</Label>
               <MediaUpload
                 files={mediaFiles}
                 onFilesChange={(files) => {
                   setMediaFiles(files)
-                  const firstImageUrl = files.find((f) => f.type === "image")?.url || files[0]?.url
-                  if (firstImageUrl && !formData.featured_image) {
-                    setFormData((p) => ({ ...p, featured_image: firstImageUrl }))
-                  }
+                const firstUrl = files[0]?.url || files[0]?.preview
+                if (firstUrl) {
+                  setFormData((p) => ({ ...p, featured_image: firstUrl }))
+                }
                 }}
               />
             </div>
