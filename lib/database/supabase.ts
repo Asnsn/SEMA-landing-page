@@ -414,22 +414,30 @@ export async function updateNewsPost(
   }
 ): Promise<NewsPost | null> {
   try {
+    const isValidUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+    if (!isValidUuid) {
+      throw new Error('ID inválido para atualização')
+    }
+
     const { data, error } = await supabaseAdmin
       .from('news_posts')
       .update({ ...postData, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) {
-      console.error("Erro ao atualizar post:", error)
-      return null
+      throw new Error(error.message || 'Erro ao atualizar post')
+    }
+
+    if (!data) {
+      throw new Error('Registro não encontrado para atualização')
     }
 
     return data as NewsPost
   } catch (error) {
-    console.error("Erro ao atualizar post:", error)
-    return null
+    console.error('Erro ao atualizar post:', error)
+    throw error
   }
 }
 
