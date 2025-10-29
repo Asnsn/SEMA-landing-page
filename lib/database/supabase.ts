@@ -287,8 +287,20 @@ export async function createNewsPost(postData: {
     }
 
     if (!resolvedAuthorId) {
-      console.error("createNewsPost: author_id ausente e nenhum admin encontrado. Configure SUPABASE_DEFAULT_AUTHOR_ID ou SUPABASE_DEFAULT_AUTHOR_EMAIL.")
-      return null
+      // Último fallback: tenta novamente pegar qualquer admin (assegura simplicidade do sistema)
+      const { data: anyAdminFallback, error: anyAdminErr } = await supabaseAdmin
+        .from('admin_users')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+
+      if (anyAdminFallback?.id) {
+        resolvedAuthorId = anyAdminFallback.id
+      } else {
+        const msg = anyAdminErr?.message || "author_id ausente e nenhum admin encontrado"
+        throw new Error(`createNewsPost: ${msg}. Configure SUPABASE_DEFAULT_AUTHOR_ID ou SUPABASE_DEFAULT_AUTHOR_EMAIL.`)
+      }
     }
 
     const insertData = {
@@ -305,14 +317,13 @@ export async function createNewsPost(postData: {
       .single()
 
     if (error) {
-      console.error("Erro ao criar post:", error)
-      return null
+      throw new Error(error.message || 'Erro ao criar post')
     }
 
     return data as NewsPost
   } catch (error) {
     console.error("Erro ao criar post:", error)
-    return null
+    throw error
   }
 }
 

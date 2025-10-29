@@ -31,12 +31,8 @@ export async function POST(request: NextRequest) {
     }
 
     const post = await createNewsPost(postData)
-
     if (!post) {
-      return NextResponse.json({
-        error: "Erro ao criar notícia no banco de dados",
-        details: "Verifique se existe um admin em public.admin_users e configure SUPABASE_DEFAULT_AUTHOR_ID, ou envie author_id no body."
-      }, { status: 500 })
+      throw new Error('Criação retornou vazio')
     }
 
     // --- INÍCIO DA ALTERAÇÃO ---
@@ -52,7 +48,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Erro ao criar notícia:", error)
     return NextResponse.json({
-      error: "Erro interno do servidor",
+      error: "Erro ao criar notícia no banco de dados",
       details: error instanceof Error ? error.message : "Erro desconhecido"
     }, { status: 500 })
   }
