@@ -6,7 +6,23 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   try {
     const { id } = params
     const data = await request.json()
-    const post = await updateNewsPost(id, data)
+
+    // Sanitiza os campos permitidos para evitar enviar author_id inválido
+    const isValidUuid = (v?: string) => !!v && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)
+    const updateData: any = {
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      featured_image: data.featured_image,
+      slug: data.slug,
+      status: data.status,
+      published_at: data.published_at,
+    }
+    if (data.author_id && !isValidUuid(data.author_id)) {
+      delete updateData.author_id
+    }
+
+    const post = await updateNewsPost(id, updateData)
 
     revalidatePath('/admin/noticias')
     revalidatePath('/blog')

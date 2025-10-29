@@ -79,17 +79,20 @@ export function NewsForm({ initialData }: NewsFormProps) {
       setSubmitting(true)
       // Tenta enviar o author_id do admin logado salvo no localStorage
       let authorId: string | undefined
-      try {
-        const stored = localStorage.getItem("admin_user")
-        if (stored) {
-          const parsed = JSON.parse(stored)
-          if (parsed?.id) authorId = parsed.id as string
-        }
-      } catch {}
+      if (!initialData?.id) {
+        try {
+          const stored = localStorage.getItem("admin_user")
+          if (stored) {
+            const parsed = JSON.parse(stored)
+            if (parsed?.id) authorId = parsed.id as string
+          }
+        } catch {}
+      }
 
-      const body = {
+      const body: any = {
         ...formData,
-        author_id: authorId,
+        // author_id apenas na criação
+        ...(authorId ? { author_id: authorId } : {}),
         media_files: mediaFiles.map((f) => ({ url: f.url ?? f.preview, type: f.type, name: f.name })),
       }
 
