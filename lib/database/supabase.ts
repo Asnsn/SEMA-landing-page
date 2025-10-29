@@ -255,8 +255,31 @@ export async function createNewsPost(postData: {
   }
 
   try {
+    // Garante que teremos um author_id válido, respeitando o NOT NULL da tabela
+    let resolvedAuthorId = postData.author_id || process.env.SUPABASE_DEFAULT_AUTHOR_ID || ""
+
+    if (!resolvedAuthorId) {
+      // Como fallback, pega o primeiro admin existente
+      const { data: anyAdmin } = await supabaseAdmin
+        .from('admin_users')
+        .select('id')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+
+      if (anyAdmin?.id) {
+        resolvedAuthorId = anyAdmin.id
+      }
+    }
+
+    if (!resolvedAuthorId) {
+      console.error("createNewsPost: author_id ausente e nenhum admin encontrado. Configure SUPABASE_DEFAULT_AUTHOR_ID.")
+      return null
+    }
+
     const insertData = {
       ...postData,
+      author_id: resolvedAuthorId,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }
